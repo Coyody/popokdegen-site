@@ -130,34 +130,31 @@ const ACHIEVEMENTS = [
 
   clearTimeout(comboTimer);
 
+  const comboDisplay = $('comboDisplay');
+  const comboValue = $('comboValue');
+
+  if (comboCount >= 25) {
+    if (comboValue) {
+      comboValue.textContent = comboCount.toLocaleString();
+    }
+
+    if (comboDisplay) {
+      comboDisplay.hidden = false;
+
+      // Small pop on each new click
+      comboDisplay.classList.remove('combo-pop');
+      void comboDisplay.offsetWidth;
+      comboDisplay.classList.add('combo-pop');
+    }
+  }
+
   comboTimer = setTimeout(() => {
     comboCount = 0;
-
-    const comboDisplay = $('comboDisplay');
 
     if (comboDisplay) {
       comboDisplay.hidden = true;
     }
   }, COMBO_RESET_MS);
-
-  if (comboCount >= 25 && comboCount % 25 === 0) {
-    showComboMilestone();
-  }
-}
-
-function showComboMilestone() {
-  const comboDisplay = $('comboDisplay');
-  const comboValue = $('comboValue');
-
-  if (!comboDisplay || !comboValue) return;
-
-  comboValue.textContent = comboCount.toLocaleString();
-
-  comboDisplay.hidden = false;
-
-  comboDisplay.classList.remove('combo-pop');
-  void comboDisplay.offsetWidth;
-  comboDisplay.classList.add('combo-pop');
 }
 
   function queueAchievementToast(achievement) {
