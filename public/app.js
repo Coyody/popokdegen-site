@@ -94,10 +94,14 @@
   renderScore();
   playPop();
 
-  if (/^(69)+$/.test(String(score))) {
+  const isNice = /^(69)+$/.test(String(score));
+
+  if (isNice) {
     popBurst.textContent = 'Nice!';
+    popBurst.classList.add('nice');
   } else {
     popBurst.textContent = '+1';
+    popBurst.classList.remove('nice');
   }
 
   animatePlusOne();
