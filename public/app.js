@@ -67,6 +67,9 @@
   let comboTimer = null;
   const COMBO_RESET_MS = 800;
 
+  let lastAcceptedClickAt = 0;
+  const MIN_CLICK_INTERVAL_MS = 80;
+
   const PERSONAL_BEST_STORAGE = 'wethdegen-personal-best';
   const HIGHEST_COMBO_STORAGE = 'wethdegen-highest-combo';
   
@@ -476,7 +479,22 @@ async function flushGlobalClicks() {
   }
 }
 
-  function press() {
+  function press(event) {
+    // Reject JavaScript-generated fake events
+  if (event && !event.isTrusted) return;
+
+  // Reject clicks that arrive unrealistically fast
+  const now = performance.now();
+
+  if (
+    lastAcceptedClickAt &&
+    now - lastAcceptedClickAt < MIN_CLICK_INTERVAL_MS
+  ) {
+    return;
+  }
+
+  lastAcceptedClickAt = now;
+    
   if (pressed) return;
   pressed = true;
 
@@ -534,10 +552,16 @@ async function flushGlobalClicks() {
 }
 
   degenButton.addEventListener('pointerdown', (event) => {
+    if (!event.isTrusted) return;
+    if (event.pointerType === 'touch' && !event.isPrimary) return;
+    
     if (event.pointerType === 'mouse' && event.button !== 0) return;
+    
     event.preventDefault();
+    
     try { degenButton.setPointerCapture(event.pointerId); } catch (_) {}
-    press();
+    
+    press(event);
   });
   degenButton.addEventListener('pointerup', release);
   degenButton.addEventListener('pointercancel', release);
@@ -546,7 +570,7 @@ async function flushGlobalClicks() {
   degenButton.addEventListener('keydown', (event) => {
     if ((event.key === 'Enter' || event.key === ' ') && !event.repeat) {
       event.preventDefault();
-      press();
+      press(event);
     }
   });
   degenButton.addEventListener('keyup', (event) => {
