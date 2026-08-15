@@ -70,6 +70,13 @@
   let lastAcceptedClickAt = 0;
   const MIN_CLICK_INTERVAL_MS = 80;
 
+  const CLICK_PATTERN_WINDOW = 100;
+  const CLICK_PATTERN_MAX_AVG_MS = 300;
+  const CLICK_PATTERN_MAX_VARIATION = 0.05;
+  
+  let clickPatternIntervals = [];
+  let degenCheckActive = false;
+
   const PERSONAL_BEST_STORAGE = 'wethdegen-personal-best';
   const HIGHEST_COMBO_STORAGE = 'wethdegen-highest-combo';
   
@@ -479,21 +486,116 @@ async function flushGlobalClicks() {
   }
 }
 
+  function trackClickPattern(interval) {
+  if (!interval || degenCheckActive) return;
+
+  clickPatternIntervals.push(interval);
+
+  if (clickPatternIntervals.length > CLICK_PATTERN_WINDOW) {
+    clickPatternIntervals.shift();
+  }
+
+  if (clickPatternIntervals.length < CLICK_PATTERN_WINDOW) {
+    return;
+  }
+
+  const average =
+    clickPatternIntervals.reduce((total, value) => total + value, 0) /
+    clickPatternIntervals.length;
+
+  const variance =
+    clickPatternIntervals.reduce((total, value) => {
+      return total + Math.pow(value - average, 2);
+    }, 0) / clickPatternIntervals.length;
+
+  const standardDeviation = Math.sqrt(variance);
+
+  const variation =
+    average > 0
+      ? standardDeviation / average
+      : 1;
+
+  if (
+    average <= CLICK_PATTERN_MAX_AVG_MS &&
+    variation <= CLICK_PATTERN_MAX_VARIATION
+  ) {
+    triggerDegenCheck();
+  }
+}
+
+function triggerDegenCheck() {
+  if (degenCheckActive) return;
+
+  degenCheckActive = true;
+  clickPatternIntervals = [];
+
+  const backdrop = $('degenCheckBackdrop');
+  const button = $('degenCheckButton');
+
+  if (!backdrop || !button) return;
+
+  backdrop.hidden = false;
+
+  const buttonWidth = 180;
+  const buttonHeight = 90;
+  const padding = 20;
+
+  const maxX =
+    Math.max(
+      padding,
+      window.innerWidth - buttonWidth - padding
+    );
+
+  const maxY =
+    Math.max(
+      padding,
+      window.innerHeight - buttonHeight - padding
+    );
+
+  const randomX =
+    padding + Math.random() * (maxX - padding);
+
+  const randomY =
+    padding + Math.random() * (maxY - padding);
+
+  button.style.left = `${randomX}px`;
+  button.style.top = `${randomY}px`;
+}
+
+function passDegenCheck() {
+  const backdrop = $('degenCheckBackdrop');
+
+  if (backdrop) {
+    backdrop.hidden = true;
+  }
+
+  degenCheckActive = false;
+  clickPatternIntervals = [];
+  lastAcceptedClickAt = 0;
+}
+
   function press(event) {
-    // Reject JavaScript-generated fake events
   if (event && !event.isTrusted) return;
 
-  // Reject clicks that arrive unrealistically fast
+  if (degenCheckActive) return;
+
   const now = performance.now();
+
+  const clickInterval =
+    lastAcceptedClickAt
+      ? now - lastAcceptedClickAt
+      : null;
 
   if (
     lastAcceptedClickAt &&
-    now - lastAcceptedClickAt < MIN_CLICK_INTERVAL_MS
+    clickInterval < MIN_CLICK_INTERVAL_MS
   ) {
     return;
   }
 
   lastAcceptedClickAt = now;
+
+  trackClickPattern(clickInterval);
     
   if (pressed) return;
   pressed = true;
@@ -745,7 +847,7 @@ refreshLeaderboard.addEventListener('click', () => {
   loadGlobalTotal();
 });
 
-  const statsButton = $('statsButton');
+const statsButton = $('statsButton');
 const closeStatsButton = $('closeStats');
 const statsBackdrop = $('statsBackdrop');
 
@@ -760,6 +862,15 @@ statsBackdrop?.addEventListener('click', (event) => {
   if (event.target === statsBackdrop) {
     closeStats();
   }
+});
+
+const degenCheckButton = $('degenCheckButton');
+
+degenCheckButton?.addEventListener('click', (event) => {
+  if (!event.isTrusted) return;
+
+  event.preventDefault();
+  passDegenCheck();
 });
 
 const shareScoreButton = $('shareScoreButton');
