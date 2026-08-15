@@ -27,6 +27,8 @@
 
   const NORMAL = '/assets/normal.png';
   const CLICKED = '/assets/clicked.png';
+  const BLAZE_IDLE = '/assets/420Idle.png';
+  const BLAZE_CLICKED = '/assets/420Clicked.png';
   const STORAGE_SCORE = 'okdegenScore';
   const STORAGE_SESSION = 'okdegenSessionId';
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
@@ -88,31 +90,49 @@
   pressed = true;
 
   degenButton.classList.add('is-down');
-  degenImage.src = CLICKED;
 
   score += 1;
   renderScore();
+
+  /* Special clicked artwork only when score hits exactly 420 */
+  if (score === 420) {
+    degenImage.src = BLAZE_CLICKED;
+  } else {
+    degenImage.src = CLICKED;
+  }
+
   playPop();
 
   const isNice = /^(69)+$/.test(String(score));
+  const isBlaze = score === 420;
 
-  if (isNice) {
+  popBurst.classList.remove('nice', 'blaze');
+
+  if (isBlaze) {
+    popBurst.textContent = 'Blaze It!';
+    popBurst.classList.add('blaze');
+  } else if (isNice) {
     popBurst.textContent = 'Nice!';
     popBurst.classList.add('nice');
   } else {
     popBurst.textContent = '+1';
-    popBurst.classList.remove('nice');
   }
 
   animatePlusOne();
 }
 
   function release() {
-    if (!pressed) return;
-    pressed = false;
-    degenButton.classList.remove('is-down');
+  if (!pressed) return;
+  pressed = false;
+
+  degenButton.classList.remove('is-down');
+
+  if (score === 420) {
+    degenImage.src = BLAZE_IDLE;
+  } else {
     degenImage.src = NORMAL;
   }
+}
 
   degenButton.addEventListener('pointerdown', (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
