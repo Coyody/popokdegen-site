@@ -29,6 +29,19 @@
   const CLICKED = '/assets/clicked.png';
   const BLAZE_IDLE = '/assets/420Idle.png';
   const BLAZE_CLICKED = '/assets/420Clicked.png';
+  const blazeIdlePreload = new Image();
+  blazeIdlePreload.src = BLAZE_IDLE;
+  
+  const blazeClickedPreload = new Image();
+  blazeClickedPreload.src = BLAZE_CLICKED;
+  
+  if (blazeIdlePreload.decode) {
+    blazeIdlePreload.decode().catch(() => {});
+  }
+  
+  if (blazeClickedPreload.decode) {
+    blazeClickedPreload.decode().catch(() => {});
+  }
   const STORAGE_SCORE = 'okdegenScore';
   const STORAGE_SESSION = 'okdegenSessionId';
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
