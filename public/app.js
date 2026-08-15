@@ -76,6 +76,9 @@ const ACHIEVEMENTS = [
   { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 }
 ];
 
+  let achievementToastQueue = [];
+  let achievementToastActive = false;
+
   const audioPool = Array.from({ length: 8 }, () => {
     const audio = new Audio('/assets/pop.mp3');
     audio.preload = 'auto';
@@ -117,6 +120,52 @@ const ACHIEVEMENTS = [
     void popBurst.offsetWidth;
     popBurst.classList.add('animate');
   }
+
+  function queueAchievementToast(achievement) {
+  achievementToastQueue.push(achievement);
+
+  if (!achievementToastActive) {
+    showNextAchievementToast();
+  }
+}
+
+function showNextAchievementToast() {
+  if (achievementToastQueue.length === 0) {
+    achievementToastActive = false;
+    return;
+  }
+
+  achievementToastActive = true;
+
+  const achievement = achievementToastQueue.shift();
+
+  const toast = $('achievementToast');
+  const toastName = $('achievementToastName');
+  const toastDescription = $('achievementToastDescription');
+
+  if (!toast || !toastName || !toastDescription) {
+    achievementToastActive = false;
+    return;
+  }
+
+  toastName.textContent = achievement.name;
+  toastDescription.textContent =
+    `Reach ${achievement.target.toLocaleString()} WETH`;
+
+  toast.hidden = false;
+
+  toast.classList.remove('show');
+  void toast.offsetWidth;
+  toast.classList.add('show');
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    toast.hidden = true;
+
+    achievementToastActive = false;
+    showNextAchievementToast();
+  }, 3200);
+}
 
   function getUnlockedAchievements() {
   try {
@@ -173,6 +222,7 @@ function checkAchievements() {
     ) {
       unlocked.push(achievement.id);
       changed = true;
+      queueAchievementToast(achievement);
 
       const item = document.querySelector(
         `[data-achievement="${achievement.id}"]`
