@@ -1290,6 +1290,6 @@ body.modal-open { overflow: hidden; }
 /* ===== MOBILE SCORE POSITION ===== */
 @media (max-width: 700px) {
   .score-wrap {
-    transform: translateY(115px);
+    transform: translateY(95px);
   }
 }
