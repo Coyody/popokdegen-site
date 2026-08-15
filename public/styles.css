@@ -836,3 +836,36 @@ body.modal-open { overflow: hidden; }
     box-shadow: 0 4px 0 #080808;
   }
 }
+
+/* ===== NICE EASTER EGG ===== */
+
+.pop-burst.nice {
+  right: 5%;
+  font-size: clamp(34px, 6vw, 64px);
+}
+
+.pop-burst.nice.animate {
+  animation: niceBurst 1.25s ease-out;
+}
+
+@keyframes niceBurst {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) rotate(6deg) scale(.5);
+  }
+
+  15% {
+    opacity: 1;
+    transform: translateY(0) rotate(-3deg) scale(1.15);
+  }
+
+  70% {
+    opacity: 1;
+    transform: translateY(-25px) rotate(-5deg) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-45px) rotate(-7deg) scale(.95);
+  }
+}
