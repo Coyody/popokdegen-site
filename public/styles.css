@@ -902,3 +902,12 @@ body.modal-open { overflow: hidden; }
     transform: translateY(-45px) rotate(-6deg) scale(.95);
   }
 }
+
+/* Make 420 artwork visually match normal character size */
+.degen-image.blaze-image {
+  transform: scale(1.22);
+}
+
+.degen-button.is-down .degen-image.blaze-image {
+  transform: scale(1.20) translateY(5px);
+}
