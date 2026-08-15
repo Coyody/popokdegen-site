@@ -902,3 +902,45 @@ body.modal-open { overflow: hidden; }
     transform: translateY(-45px) rotate(-6deg) scale(.95);
   }
 }
+
+/* ===== SHARE SCORE TO X ===== */
+
+.share-score-button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 10px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 3px solid #080808;
+  border-radius: 12px;
+
+  background: #fff;
+  color: #080808;
+
+  box-shadow: 0 4px 0 #080808;
+
+  font: inherit;
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.share-score-button img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.share-score-button:hover {
+  transform: translateY(-1px);
+}
+
+.share-score-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #080808;
+}
