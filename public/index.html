@@ -16,9 +16,6 @@
   <main class="app-shell">
     <header class="topbar">
       <img class="logo" src="/assets/logo.png" alt="OKDEGEN" draggable="false" />
-      <button id="muteButton" class="icon-button" type="button" aria-pressed="false" aria-label="Mute pop sound" title="Mute sound">
-        <span id="muteIcon" aria-hidden="true">🔊</span>
-      </button>
     </header>
 
     <section class="game" aria-label="OkDegen clicker">
@@ -32,17 +29,37 @@
         <span id="popBurst" class="pop-burst" aria-hidden="true">+1</span>
       </button>
 
-      <div class="actions" aria-label="OkDegen links and leaderboard">
-        <a class="action-button" href="https://x.com/okdegen" target="_blank" rel="noopener noreferrer" aria-label="OkDegen on X">
-          <span class="action-mark" aria-hidden="true">𝕏</span><span>X</span>
-        </a>
-        <a class="action-button" href="https://opensea.io/collection/okdegen" target="_blank" rel="noopener noreferrer" aria-label="OkDegen on OpenSea">
-          <span class="action-mark" aria-hidden="true">◉</span><span>OpenSea</span>
-        </a>
-        <button id="leaderboardButton" class="action-button action-primary" type="button">
-          <span class="action-mark" aria-hidden="true">🏆</span><span>Leaderboard</span>
-        </button>
-      </div>
+      <div class="actions" aria-label="OkDegen controls">
+  <button id="leaderboardButton" class="action-button action-primary" type="button">
+    <span aria-hidden="true">🏆</span>
+    <span>Leaderboard</span>
+  </button>
+
+  <div class="small-controls">
+    <button id="muteButton" class="small-icon-button" type="button"
+      aria-pressed="false" aria-label="Mute pop sound" title="Mute sound">
+      <span id="muteIcon" aria-hidden="true">🔊</span>
+    </button>
+
+    <a class="small-icon-button"
+      href="https://x.com/okdegen"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="OkDegen on X"
+      title="X">
+      <img src="/assets/x-logo.png" alt="">
+    </a>
+
+    <a class="small-icon-button"
+      href="https://opensea.io/collection/okdegen"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="OkDegen on OpenSea"
+      title="OpenSea">
+      <img src="/assets/opensea-logo.png" alt="">
+    </a>
+  </div>
+</div>
     </section>
   </main>
 
