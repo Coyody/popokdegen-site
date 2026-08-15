@@ -1227,21 +1227,20 @@ body.modal-open { overflow: hidden; }
 /* ===== COMBO STREAK ===== */
 
 .combo-display {
-  margin-top: 8px;
-  margin-bottom: 4px;
-
-  padding: 7px 13px;
+  margin-bottom: 8px;
+  padding: 5px 14px;
 
   border: 3px solid #080808;
-  border-radius: 999px;
+  border-radius: 10px;
 
   background: #ffe968;
   color: #080808;
 
   box-shadow: 0 4px 0 #080808;
 
-  font-size: clamp(14px, 2vw, 19px);
-  letter-spacing: .04em;
+  font-size: clamp(20px, 3vw, 30px);
+  line-height: 1;
+  letter-spacing: .02em;
 
   position: relative;
   z-index: 5;
