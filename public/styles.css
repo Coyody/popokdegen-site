@@ -1395,6 +1395,14 @@ body.modal-open { overflow: hidden; }
   position: fixed;
   inset: 0;
   z-index: 200;
+
+  /* Gray/dark overlay over the website */
+  background: rgba(70, 70, 70, 0.65);
+
+  /* Makes the website underneath feel inactive */
+  backdrop-filter: grayscale(70%) brightness(70%);
+  -webkit-backdrop-filter: grayscale(70%) brightness(70%);
+
   pointer-events: auto;
 }
 
