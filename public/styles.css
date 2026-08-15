@@ -166,14 +166,42 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .actions {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
+  display: contents;
+}
+
+/* Leaderboard - top left */
+#leaderboardButton {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+/* X + OpenSea - small icons bottom right */
+.actions a.action-button {
+  position: fixed;
+  bottom: 20px;
+  z-index: 10;
+
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+  padding: 0;
+  border-radius: 50%;
+
+  font-size: 0;
+}
+
+.actions a.action-button .action-mark {
+  font-size: 20px;
+}
+
+.actions a[href*="x.com"] {
+  right: 76px;
+}
+
+.actions a[href*="opensea.io"] {
+  right: 20px;
 }
 
 .action-button {
