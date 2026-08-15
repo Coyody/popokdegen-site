@@ -74,8 +74,14 @@
   const CLICK_PATTERN_MAX_AVG_MS = 300;
   const CLICK_PATTERN_MAX_VARIATION = 0.05;
   
+  const DEGEN_STRIKE_STORAGE = 'wethdegen-degen-strikes';
+  
   let clickPatternIntervals = [];
   let degenCheckActive = false;
+  
+  let degenStrikeCount = Number(
+    sessionStorage.getItem(DEGEN_STRIKE_STORAGE) || 0
+  );
 
   const PERSONAL_BEST_STORAGE = 'wethdegen-personal-best';
   const HIGHEST_COMBO_STORAGE = 'wethdegen-highest-combo';
@@ -529,21 +535,83 @@ function triggerDegenCheck() {
   degenCheckActive = true;
   clickPatternIntervals = [];
 
-  const backdrop = $('degenCheckBackdrop');
-  const button = $('degenCheckButton');
+  degenStrikeCount += 1;
 
-  if (!backdrop || !button) return;
+  sessionStorage.setItem(
+    DEGEN_STRIKE_STORAGE,
+    String(degenStrikeCount)
+  );
+
+  const backdrop = $('degenCheckBackdrop');
+  const question = document.querySelector('.degen-check-question');
+  const buttonText = document.querySelector('.degen-check-text');
+
+  if (!backdrop || !question || !buttonText) return;
+
+  if (degenStrikeCount === 1) {
+    question.textContent =
+      'Are you using an auto clicker Degen? 😉';
+
+    buttonText.textContent =
+      'Click Here if No';
+  }
+
+  else if (degenStrikeCount === 2) {
+    question.textContent =
+      'Tsk Tsk Degen, You should stop using that auto clicker. Last Warning. 😈';
+
+    buttonText.textContent =
+      'Click Here to Continue';
+  }
+
+  else {
+    question.textContent =
+      'You know, I thought you were better than this Degen... 😢';
+
+    buttonText.textContent =
+      'Click Here';
+  }
 
   backdrop.hidden = false;
 }
 
-function passDegenCheck() {
+async function punishAutoClicker() {
+  // Reset personal browser stats
+  localStorage.removeItem(PERSONAL_BEST_STORAGE);
+  localStorage.removeItem(HIGHEST_COMBO_STORAGE);
+  localStorage.removeItem(ACHIEVEMENTS_STORAGE);
+
+  // Reset warning count
+  sessionStorage.removeItem(DEGEN_STRIKE_STORAGE);
+
+  // Reset current run/session
+  sessionStorage.removeItem(STORAGE_SCORE);
+  sessionStorage.removeItem(STORAGE_SESSION);
+
+  personalBest = 0;
+  highestCombo = 0;
+  comboCount = 0;
+  score = 0;
+
+  // Leaderboard removal will be added here next.
+
+  window.location.reload();
+}  
+
+async function passDegenCheck() {
   const backdrop = $('degenCheckBackdrop');
 
   if (backdrop) {
     backdrop.hidden = true;
   }
 
+  // Third strike = punishment
+  if (degenStrikeCount >= 3) {
+    await punishAutoClicker();
+    return;
+  }
+
+  // First / second strike = allow them to continue
   degenCheckActive = false;
   clickPatternIntervals = [];
   lastAcceptedClickAt = 0;
