@@ -706,7 +706,7 @@ body.modal-open { overflow: hidden; }
 
     /* move character lower */
     margin-top: 24px;
-    transform: translateY(45px);
+    transform: translateY(55px);
   }
 
   .degen-image {
