@@ -609,3 +609,84 @@ body.modal-open { overflow: hidden; }
     padding: 16px;
   }
 }
+
+/* ===== MOBILE CLEANUP V2 ===== */
+
+@media (max-width: 700px) {
+
+  /* Reserve space at the top for the controls */
+  .topbar {
+    min-height: 165px;
+    padding-top: 105px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* Logo sits below the controls instead of behind them */
+  .logo {
+    width: min(260px, 62vw);
+    max-height: 70px;
+    margin: 0 auto;
+  }
+
+  /* Leaderboard */
+  #leaderboardButton {
+    top: 12px;
+    left: 12px;
+    min-height: 42px;
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Sound / X / OpenSea directly underneath */
+  .small-controls {
+    top: 66px;
+    left: 12px;
+    gap: 7px;
+  }
+
+  .small-icon-button {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+    min-height: 39px;
+  }
+
+  .small-icon-button img {
+    width: 19px;
+    height: 19px;
+  }
+
+  .small-icon-button[href*="opensea.io"] img {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Pull score closer to logo */
+  .game {
+    padding-top: 0;
+    justify-content: flex-start;
+  }
+
+  .score-wrap {
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  /* Make character fit a phone screen better */
+  .degen-button {
+    left: 0;
+    width: 90vw;
+    height: min(48dvh, 470px);
+    min-height: 300px;
+    margin: 0 auto;
+  }
+
+  .degen-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+}
