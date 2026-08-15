@@ -1223,3 +1223,68 @@ body.modal-open { overflow: hidden; }
     font-size: 11px;
   }
 }
+
+/* ===== COMBO STREAK ===== */
+
+.combo-display {
+  margin-top: 8px;
+  margin-bottom: 4px;
+
+  padding: 7px 13px;
+
+  border: 3px solid #080808;
+  border-radius: 999px;
+
+  background: #ffe968;
+  color: #080808;
+
+  box-shadow: 0 4px 0 #080808;
+
+  font-size: clamp(14px, 2vw, 19px);
+  letter-spacing: .04em;
+
+  position: relative;
+  z-index: 5;
+
+  pointer-events: none;
+}
+
+.combo-display[hidden] {
+  display: none;
+}
+
+.combo-display.combo-pop {
+  animation: comboPop 500ms ease;
+}
+
+@keyframes comboPop {
+  0% {
+    transform: scale(.75);
+    opacity: 0;
+  }
+
+  45% {
+    transform: scale(1.15) rotate(-2deg);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(.98) rotate(1deg);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .combo-display {
+    margin-top: 7px;
+    padding: 6px 11px;
+    border-width: 3px;
+    box-shadow: 0 3px 0 #080808;
+    font-size: 13px;
+  }
+}
