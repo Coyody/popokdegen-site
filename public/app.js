@@ -2,6 +2,9 @@
   'use strict';
 
   const $ = (id) => document.getElementById(id);
+  const menuButton = $('menuButton');
+  const siteMenu = $('siteMenu');
+  const muteText = $('muteText');
   const scoreEl = $('score');
   const degenButton = $('degenButton');
   const degenImage = $('degenImage');
@@ -60,6 +63,7 @@
     muteButton.setAttribute('aria-label', muted ? 'Unmute pop sound' : 'Mute pop sound');
     muteButton.title = muted ? 'Unmute sound' : 'Mute sound';
     muteIcon.textContent = muted ? '🔇' : '🔊';
+    muteText.textContent = muted ? 'Sound Off' : 'Sound On';
   }
 
   function playPop() {
@@ -125,6 +129,19 @@
     localStorage.setItem(STORAGE_MUTE, muted ? '1' : '0');
     renderMute();
   });
+  menuButton.addEventListener('click', () => {
+  const isOpen = !siteMenu.hidden;
+
+  siteMenu.hidden = isOpen;
+  menuButton.setAttribute('aria-expanded', String(!isOpen));
+});
+
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('.menu-wrap')) {
+    siteMenu.hidden = true;
+    menuButton.setAttribute('aria-expanded', 'false');
+  }
+});
 
   function setMode(mode) {
     backendMode = mode;
