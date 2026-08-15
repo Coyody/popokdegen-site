@@ -1388,3 +1388,67 @@ body.modal-open { overflow: hidden; }
     left: 22px;
   }
 }
+
+/* ===== DEGEN CHECK ===== */
+
+.degen-check-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: auto;
+}
+
+.degen-check-backdrop[hidden] {
+  display: none;
+}
+
+.degen-check-button {
+  position: absolute;
+
+  width: 180px;
+  min-height: 82px;
+
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  border: 4px solid #080808;
+  border-radius: 16px;
+
+  background: #ffe968;
+  color: #080808;
+
+  box-shadow: 0 6px 0 #080808;
+
+  cursor: pointer;
+}
+
+.degen-check-warning {
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+.degen-check-text {
+  font-size: 24px;
+}
+
+.degen-check-button:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #080808;
+}
+
+@media (max-width: 700px) {
+  .degen-check-button {
+    width: 155px;
+    min-height: 72px;
+    border-width: 3px;
+  }
+
+  .degen-check-text {
+    font-size: 20px;
+  }
+}
