@@ -55,6 +55,11 @@
   let backendMode = 'checking'; // checking | live | local
   let sessionId = sessionStorage.getItem(STORAGE_SESSION) || '';
   let sessionPromise = null;
+  
+  let globalTotalValue = 0;
+  let pendingGlobalClicks = 0;
+  let globalSyncTimer = null;
+  let globalSyncInFlight = false;
 
   const audioPool = Array.from({ length: 8 }, () => {
     const audio = new Audio('/assets/pop.mp3');
@@ -98,6 +103,87 @@
     popBurst.classList.add('animate');
   }
 
+  async function loadGlobalTotal() {
+  const globalTotal = $('globalTotal');
+  if (!globalTotal) return;
+
+  try {
+    const response = await fetch('/api/global', {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) throw new Error('Could not load global total');
+
+    const data = await response.json();
+
+    globalTotalValue = Number(data.total || 0);
+    globalTotal.textContent = globalTotalValue.toLocaleString();
+  } catch (error) {
+    console.error('Global counter load failed:', error);
+  }
+}
+
+function queueGlobalClick() {
+  pendingGlobalClicks += 1;
+  globalTotalValue += 1;
+
+  const globalTotal = $('globalTotal');
+
+  if (globalTotal) {
+    globalTotal.textContent = globalTotalValue.toLocaleString();
+  }
+
+  clearTimeout(globalSyncTimer);
+
+  if (pendingGlobalClicks >= 10) {
+    flushGlobalClicks();
+  } else {
+    globalSyncTimer = setTimeout(flushGlobalClicks, 1000);
+  }
+}
+
+async function flushGlobalClicks() {
+  if (globalSyncInFlight || pendingGlobalClicks === 0) return;
+
+  globalSyncInFlight = true;
+
+  const clicks = Math.min(pendingGlobalClicks, 100);
+  pendingGlobalClicks -= clicks;
+
+  try {
+    const response = await fetch('/api/global', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ clicks })
+    });
+
+    if (!response.ok) throw new Error('Could not update global total');
+
+    const data = await response.json();
+
+    globalTotalValue = Number(data.total || globalTotalValue);
+
+    const globalTotal = $('globalTotal');
+
+    if (globalTotal) {
+      globalTotal.textContent = globalTotalValue.toLocaleString();
+    }
+  } catch (error) {
+    console.error('Global counter update failed:', error);
+
+    pendingGlobalClicks += clicks;
+  } finally {
+    globalSyncInFlight = false;
+
+    if (pendingGlobalClicks > 0) {
+      clearTimeout(globalSyncTimer);
+      globalSyncTimer = setTimeout(flushGlobalClicks, 1000);
+    }
+  }
+}
+
   function press() {
   if (pressed) return;
   pressed = true;
@@ -106,6 +192,7 @@
 
   score += 1;
   renderScore();
+  queueGlobalClick();
 
   /* Special clicked artwork only when score hits exactly 420 */
   if (score === 420) {
@@ -304,6 +391,7 @@ document.addEventListener('click', (event) => {
     document.body.classList.add('modal-open');
     submitScoreValue.textContent = formatScore(score);
     loadLeaderboard();
+    loadGlobalTotal();
     setTimeout(() => closeModal.focus(), 0);
   }
 
@@ -315,7 +403,10 @@ document.addEventListener('click', (event) => {
 
   leaderboardButton.addEventListener('click', openModal);
   closeModal.addEventListener('click', closeLeaderboard);
-  refreshLeaderboard.addEventListener('click', loadLeaderboard);
+  refreshLeaderboard.addEventListener('click', () => {
+  loadLeaderboard();
+  loadGlobalTotal();
+});
   modalBackdrop.addEventListener('click', (event) => {
     if (event.target === modalBackdrop) closeLeaderboard();
   });
@@ -370,7 +461,9 @@ document.addEventListener('click', (event) => {
   });
 
   renderScore();
-  renderMute();
-  // Start a server-side timing session early when the backend exists.
-  ensureSession();
+renderMute();
+loadGlobalTotal();
+
+// Start a server-side timing session early when the backend exists.
+ensureSession();
 })();
