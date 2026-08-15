@@ -29,36 +29,45 @@
         <span id="popBurst" class="pop-burst" aria-hidden="true">+1</span>
       </button>
 
-      <div class="actions" aria-label="OkDegen controls">
-  <button id="leaderboardButton" class="action-button action-primary" type="button">
-    <span aria-hidden="true">🏆</span>
-    <span>Leaderboard</span>
+      <div class="menu-wrap">
+
+  <button id="menuButton" class="menu-button" type="button"
+    aria-expanded="false" aria-controls="siteMenu">
+    <span aria-hidden="true">☰</span>
+    <span>MENU</span>
   </button>
 
-  <div class="small-controls">
-    <button id="muteButton" class="small-icon-button" type="button"
-      aria-pressed="false" aria-label="Mute pop sound" title="Mute sound">
-      <span id="muteIcon" aria-hidden="true">🔊</span>
+  <div id="siteMenu" class="site-menu" hidden>
+
+    <button id="leaderboardButton" class="menu-item" type="button">
+      <span aria-hidden="true">🏆</span>
+      <span>Leaderboard</span>
     </button>
 
-    <a class="small-icon-button"
+    <a class="menu-item"
       href="https://x.com/okdegen"
       target="_blank"
-      rel="noopener noreferrer"
-      aria-label="OkDegen on X"
-      title="X">
+      rel="noopener noreferrer">
       <img src="/assets/x-logo.png" alt="">
+      <span>X</span>
     </a>
 
-    <a class="small-icon-button"
+    <a class="menu-item"
       href="https://opensea.io/collection/okdegen"
       target="_blank"
-      rel="noopener noreferrer"
-      aria-label="OkDegen on OpenSea"
-      title="OpenSea">
+      rel="noopener noreferrer">
       <img src="/assets/opensea-logo.png" alt="">
+      <span>OpenSea</span>
     </a>
+
+    <button id="muteButton" class="menu-item" type="button"
+      aria-pressed="false">
+      <span id="muteIcon" aria-hidden="true">🔊</span>
+      <span id="muteText">Sound On</span>
+    </button>
+
   </div>
+
 </div>
     </section>
   </main>
