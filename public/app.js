@@ -535,31 +535,6 @@ function triggerDegenCheck() {
   if (!backdrop || !button) return;
 
   backdrop.hidden = false;
-
-  const buttonWidth = 180;
-  const buttonHeight = 90;
-  const padding = 20;
-
-  const maxX =
-    Math.max(
-      padding,
-      window.innerWidth - buttonWidth - padding
-    );
-
-  const maxY =
-    Math.max(
-      padding,
-      window.innerHeight - buttonHeight - padding
-    );
-
-  const randomX =
-    padding + Math.random() * (maxX - padding);
-
-  const randomY =
-    padding + Math.random() * (maxY - padding);
-
-  button.style.left = `${randomX}px`;
-  button.style.top = `${randomY}px`;
 }
 
 function passDegenCheck() {
