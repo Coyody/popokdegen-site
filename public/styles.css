@@ -1259,21 +1259,21 @@ body.modal-open { overflow: hidden; }
 
 @keyframes comboPop {
   0% {
-    transform: scale(.75);
+    transform: translateX(-50%) scale(.75);
     opacity: 0;
   }
 
   45% {
-    transform: scale(1.15) rotate(-2deg);
+    transform: translateX(-50%) scale(1.15) rotate(-2deg);
     opacity: 1;
   }
 
   70% {
-    transform: scale(.98) rotate(1deg);
+    transform: translateX(-50%) scale(.98) rotate(1deg);
   }
 
   100% {
-    transform: scale(1);
+    transform: translateX(-50%) scale(1);
     opacity: 1;
   }
 }
