@@ -495,3 +495,117 @@ body.modal-open { overflow: hidden; }
     min-height: 40px;
   }
 }
+
+/* ===== MOBILE VERSION ===== */
+
+@media (max-width: 700px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-shell {
+    width: 100%;
+    min-height: 100dvh;
+    padding: 8px 8px 18px;
+  }
+
+  /* Smaller centered logo */
+  .topbar {
+    min-height: 64px;
+  }
+
+  .logo {
+    width: min(220px, 55vw);
+    max-height: 64px;
+  }
+
+  /* Leaderboard top-left */
+  #leaderboardButton {
+    top: 10px;
+    left: 10px;
+
+    min-height: 40px;
+    padding: 7px 10px;
+
+    font-size: 11px;
+    border-width: 3px;
+    box-shadow: 0 3px 0 #080808;
+  }
+
+  /* Volume / X / OpenSea */
+  .small-controls {
+    top: 59px;
+    left: 10px;
+    gap: 6px;
+  }
+
+  .small-icon-button {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+
+    border-width: 3px;
+    box-shadow: 0 3px 0 #080808;
+  }
+
+  .small-icon-button img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .small-icon-button[href*="opensea.io"] img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .small-icon-button #muteIcon {
+    font-size: 16px;
+  }
+
+  /* Give controls some breathing room */
+  .game {
+    justify-content: flex-start;
+    padding-top: 45px;
+  }
+
+  /* Score */
+  .score-wrap {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .score {
+    font-size: clamp(42px, 12vw, 64px);
+  }
+
+  .score-label {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* Character centered properly on phone */
+  .degen-button {
+    left: 0;
+    width: 96vw;
+    height: min(54dvh, 500px);
+    min-height: 280px;
+    margin: 0 auto;
+  }
+
+  .degen-image {
+    object-position: center bottom;
+  }
+
+  /* Leaderboard popup */
+  .modal-backdrop {
+    padding: 8px;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 88dvh;
+    padding: 16px;
+  }
+}
