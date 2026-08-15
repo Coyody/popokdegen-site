@@ -47,13 +47,15 @@
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
   const STORAGE_MUTE = 'okdegenMuted';
 
-  let score = Number.parseInt(sessionStorage.getItem(STORAGE_SCORE) || '0', 10);
-  if (!Number.isFinite(score) || score < 0) score = 0;
+  let score = 0;
+
+  sessionStorage.removeItem(STORAGE_SCORE);
+  sessionStorage.removeItem(STORAGE_SESSION);
 
   let muted = localStorage.getItem(STORAGE_MUTE) === '1';
   let pressed = false;
   let backendMode = 'checking'; // checking | live | local
-  let sessionId = sessionStorage.getItem(STORAGE_SESSION) || '';
+  let sessionId = '';
   let sessionPromise = null;
   
   let globalTotalValue = 0;
@@ -108,7 +110,6 @@ const ACHIEVEMENTS = [
   function renderScore() {
     scoreEl.textContent = formatScore(score);
     submitScoreValue.textContent = formatScore(score);
-    sessionStorage.setItem(STORAGE_SCORE, String(score));
   }
 
   function renderMute() {
