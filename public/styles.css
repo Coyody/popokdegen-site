@@ -389,3 +389,109 @@ body.modal-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 1ms !important; transition-duration: 1ms !important; }
 }
+
+/* ===== OKDEGEN FINAL CONTROL LAYOUT ===== */
+
+/* Move character slightly right so it lines up with POPS counter */
+.degen-button {
+  position: relative;
+  left: 24px;
+}
+
+/* Leaderboard stays top left */
+#leaderboardButton {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+}
+
+/* Volume + X + OpenSea row underneath leaderboard */
+.small-controls {
+  position: fixed;
+  top: 82px;
+  left: 20px;
+  z-index: 20;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Small round icon buttons */
+.small-icon-button {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+
+  padding: 0;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 3px solid #080808;
+  border-radius: 50%;
+  background: #fffef7;
+  color: #080808;
+  box-shadow: 0 4px 0 #080808;
+
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Center volume icon */
+.small-icon-button #muteIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Center image icons */
+.small-icon-button img {
+  display: block;
+  width: 21px;
+  height: 21px;
+  object-fit: contain;
+  margin: 0;
+}
+
+/* Slightly larger OpenSea icon */
+.small-icon-button[href*="opensea.io"] img {
+  width: 24px;
+  height: 24px;
+}
+
+/* Remove old bottom-right positioning */
+.actions a.action-button {
+  position: static;
+}
+
+/* Mobile adjustment */
+@media (max-width: 560px) {
+  .degen-button {
+    left: 12px;
+  }
+
+  #leaderboardButton {
+    top: 12px;
+    left: 12px;
+  }
+
+  .small-controls {
+    top: 70px;
+    left: 12px;
+  }
+
+  .small-icon-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
