@@ -25,6 +25,12 @@
   const submitScoreValue = $('submitScoreValue');
   const formStatus = $('formStatus');
 
+  const achievementsButton = $('achievementsButton');
+
+  achievementsButton?.addEventListener('click', () => {
+    alert('Achievements coming soon!');
+  });
+
   const NORMAL = '/assets/normal.png';
   const CLICKED = '/assets/clicked.png';
   const BLAZE_IDLE = '/assets/420Idle.png';
