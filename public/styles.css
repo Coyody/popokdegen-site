@@ -1374,3 +1374,17 @@ body.modal-open { overflow: hidden; }
     font-size: 38px;
   }
 }
+
+/* ===== CHARACTER HORIZONTAL POSITION ===== */
+
+/* Desktop */
+.degen-button {
+  left: 40px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .degen-button {
+    left: 30px;
+  }
+}
