@@ -61,6 +61,10 @@
   let globalSyncTimer = null;
   let globalSyncInFlight = false;
 
+  let comboCount = 0;
+  let comboTimer = null;
+  const COMBO_RESET_MS = 800;
+
   const ACHIEVEMENTS_STORAGE = 'wethdegen-achievements';
 
 const ACHIEVEMENTS = [
@@ -120,6 +124,41 @@ const ACHIEVEMENTS = [
     void popBurst.offsetWidth;
     popBurst.classList.add('animate');
   }
+
+  function updateCombo() {
+  comboCount += 1;
+
+  clearTimeout(comboTimer);
+
+  comboTimer = setTimeout(() => {
+    comboCount = 0;
+
+    const comboDisplay = $('comboDisplay');
+
+    if (comboDisplay) {
+      comboDisplay.hidden = true;
+    }
+  }, COMBO_RESET_MS);
+
+  if (comboCount >= 25 && comboCount % 25 === 0) {
+    showComboMilestone();
+  }
+}
+
+function showComboMilestone() {
+  const comboDisplay = $('comboDisplay');
+  const comboValue = $('comboValue');
+
+  if (!comboDisplay || !comboValue) return;
+
+  comboValue.textContent = comboCount.toLocaleString();
+
+  comboDisplay.hidden = false;
+
+  comboDisplay.classList.remove('combo-pop');
+  void comboDisplay.offsetWidth;
+  comboDisplay.classList.add('combo-pop');
+}
 
   function queueAchievementToast(achievement) {
   achievementToastQueue.push(achievement);
@@ -364,6 +403,7 @@ async function flushGlobalClicks() {
   renderScore();
   queueGlobalClick();
   checkAchievements();
+  updateCombo();
 
   /* Special clicked artwork only when score hits exactly 420 */
   if (score === 420) {
