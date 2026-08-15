@@ -69,16 +69,31 @@ export async function onRequest(context) {
   const improved = !existing || score > Number(existing.score);
 
   if (improved) {
-    await DB.prepare(`
-      INSERT INTO scores (name_key, display_name, score, updated_at)
-      VALUES (?, ?, ?, ?)
-      ON CONFLICT(name_key) DO UPDATE SET
-        display_name = excluded.display_name,
-        score = excluded.score,
-        updated_at = excluded.updated_at
-      WHERE excluded.score > scores.score
-    `).bind(nameKey, name, score, now).run();
-  }
+  await DB.prepare(`
+    INSERT INTO scores (
+      name_key,
+      display_name,
+      score,
+      updated_at,
+      owner_session_id
+    )
+    VALUES (?, ?, ?, ?, ?)
+
+    ON CONFLICT(name_key) DO UPDATE SET
+      display_name = excluded.display_name,
+      score = excluded.score,
+      updated_at = excluded.updated_at,
+      owner_session_id = excluded.owner_session_id
+
+    WHERE excluded.score > scores.score
+  `).bind(
+    nameKey,
+    name,
+    score,
+    now,
+    sessionId
+  ).run();
+}
 
   await DB.prepare(
     'UPDATE sessions SET last_submit_at = ?, submitted_score = ? WHERE id = ?'
