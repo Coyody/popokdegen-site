@@ -57,6 +57,11 @@
       <span>Achievements</span>
     </button>
 
+    <button id="statsButton" class="menu-item" type="button">
+      <span aria-hidden="true">📊</span>
+      <span>My Stats</span>
+    </button>
+
     <a class="menu-item"
       href="https://x.com/okdegen"
       target="_blank"
@@ -239,6 +244,54 @@
           <strong>Ultimate WETH'ER</strong>
           <span>Reach 100,000 WETH</span>
         </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+  <!-- MY STATS MODAL -->
+<div id="statsBackdrop" class="modal-backdrop" hidden>
+
+  <section
+    id="statsModal"
+    class="modal stats-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="statsTitle"
+  >
+
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">WETHDEGEN</div>
+        <h1 id="statsTitle">MY STATS</h1>
+      </div>
+
+      <button
+        id="closeStats"
+        class="close-button"
+        type="button"
+        aria-label="Close stats"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">PERSONAL BEST</div>
+        <div id="personalBestStat" class="stat-value">0</div>
+        <div class="stat-unit">WETH'D</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-label">HIGHEST COMBO</div>
+        <div id="highestComboStat" class="stat-value">x0</div>
       </div>
 
     </div>
