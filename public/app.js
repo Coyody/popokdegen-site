@@ -96,10 +96,12 @@
 
   /* Special clicked artwork only when score hits exactly 420 */
   if (score === 420) {
-    degenImage.src = BLAZE_CLICKED;
-  } else {
-    degenImage.src = CLICKED;
-  }
+  degenImage.src = BLAZE_CLICKED;
+  degenImage.classList.add('blaze-image');
+} else {
+  degenImage.src = CLICKED;
+  degenImage.classList.remove('blaze-image');
+}
 
   playPop();
 
@@ -128,10 +130,12 @@
   degenButton.classList.remove('is-down');
 
   if (score === 420) {
-    degenImage.src = BLAZE_IDLE;
-  } else {
-    degenImage.src = NORMAL;
-  }
+  degenImage.src = BLAZE_IDLE;
+  degenImage.classList.add('blaze-image');
+} else {
+  degenImage.src = NORMAL;
+  degenImage.classList.remove('blaze-image');
+}
 }
 
   degenButton.addEventListener('pointerdown', (event) => {
