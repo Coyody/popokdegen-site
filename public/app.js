@@ -576,15 +576,38 @@ function triggerDegenCheck() {
 }
 
 async function punishAutoClicker() {
-  // Reset personal browser stats
+  // Save this before clearing sessionStorage.
+  const offendingSessionId = sessionId;
+
+  // Remove the offending leaderboard entry first.
+  if (offendingSessionId) {
+    try {
+      await fetch('/api/punish', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          sessionId: offendingSessionId
+        })
+      });
+    } catch (error) {
+      console.error(
+        'Could not remove leaderboard score:',
+        error
+      );
+    }
+  }
+
+  // Reset persistent personal stats.
   localStorage.removeItem(PERSONAL_BEST_STORAGE);
   localStorage.removeItem(HIGHEST_COMBO_STORAGE);
   localStorage.removeItem(ACHIEVEMENTS_STORAGE);
 
-  // Reset warning count
+  // Reset strikes.
   sessionStorage.removeItem(DEGEN_STRIKE_STORAGE);
 
-  // Reset current run/session
+  // Reset game/session data.
   sessionStorage.removeItem(STORAGE_SCORE);
   sessionStorage.removeItem(STORAGE_SESSION);
 
@@ -592,9 +615,9 @@ async function punishAutoClicker() {
   highestCombo = 0;
   comboCount = 0;
   score = 0;
+  sessionId = '';
 
-  // Leaderboard removal will be added here next.
-
+  // Refresh into a completely new run.
   window.location.reload();
 }  
 
