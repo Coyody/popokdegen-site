@@ -103,9 +103,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
   position: relative;
   display: grid;
   place-items: center;
-  width: min(560px, 88vw);
-  height: min(56svh, 620px);
-  min-height: 320px;
+  width: min(500px, 82vw);
+  height: min(46svh, 500px);
+  min-height: 260px;
   padding: 0;
   border: 0;
   background: transparent;
