@@ -402,10 +402,24 @@ document.addEventListener('click', (event) => {
   }
 
   leaderboardButton.addEventListener('click', openModal);
-  closeModal.addEventListener('click', closeLeaderboard);
-  refreshLeaderboard.addEventListener('click', () => {
+closeModal.addEventListener('click', closeLeaderboard);
+
+refreshLeaderboard.addEventListener('click', () => {
   loadLeaderboard();
   loadGlobalTotal();
+});
+
+const shareScoreButton = $('shareScoreButton');
+
+shareScoreButton?.addEventListener('click', () => {
+  const shareText =
+    `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
+
+  const shareUrl =
+    `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
+    `&url=${encodeURIComponent(window.location.origin)}`;
+
+  window.open(shareUrl, '_blank');
 });
   modalBackdrop.addEventListener('click', (event) => {
     if (event.target === modalBackdrop) closeLeaderboard();
