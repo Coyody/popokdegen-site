@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#79e7a3" />
+  <meta name="description" content="POP OKDEGEN. Click. Pop. Climb the leaderboard." />
+  <title>POP OKDEGEN</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preload" href="/assets/normal.png" as="image" />
+  <link rel="preload" href="/assets/clicked.png" as="image" />
+  <link rel="preload" href="/assets/pop.mp3" as="audio" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <img class="logo" src="/assets/logo.png" alt="OKDEGEN" draggable="false" />
+      <button id="muteButton" class="icon-button" type="button" aria-pressed="false" aria-label="Mute pop sound" title="Mute sound">
+        <span id="muteIcon" aria-hidden="true">🔊</span>
+      </button>
+    </header>
+
+    <section class="game" aria-label="OkDegen clicker">
+      <div class="score-wrap" aria-live="polite" aria-atomic="true">
+        <div id="score" class="score">0</div>
+        <div class="score-label">POPS</div>
+      </div>
+
+      <button id="degenButton" class="degen-button" type="button" aria-label="Click OkDegen to pop">
+        <img id="degenImage" class="degen-image" src="/assets/normal.png" alt="OkDegen character" draggable="false" />
+        <span id="popBurst" class="pop-burst" aria-hidden="true">+1</span>
+      </button>
+
+      <p class="hint">TAP THE DEGEN</p>
+
+      <div class="actions" aria-label="OkDegen links and leaderboard">
+        <a class="action-button" href="https://x.com/okdegen" target="_blank" rel="noopener noreferrer" aria-label="OkDegen on X">
+          <span class="action-mark" aria-hidden="true">𝕏</span><span>X</span>
+        </a>
+        <a class="action-button" href="https://opensea.io/collection/okdegen" target="_blank" rel="noopener noreferrer" aria-label="OkDegen on OpenSea">
+          <span class="action-mark" aria-hidden="true">◉</span><span>OpenSea</span>
+        </a>
+        <button id="leaderboardButton" class="action-button action-primary" type="button">
+          <span class="action-mark" aria-hidden="true">🏆</span><span>Leaderboard</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div id="modalBackdrop" class="modal-backdrop" hidden>
+    <section id="leaderboardModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="leaderboardTitle">
+      <div class="modal-head">
+        <div>
+          <div class="eyebrow">ALL-TIME TOP 10</div>
+          <h1 id="leaderboardTitle">LEADERBOARD</h1>
+        </div>
+        <button id="closeModal" class="close-button" type="button" aria-label="Close leaderboard">×</button>
+      </div>
+
+      <div class="connection-row">
+        <span id="connectionBadge" class="badge">CHECKING…</span>
+        <button id="refreshLeaderboard" class="text-button" type="button">Refresh</button>
+      </div>
+
+      <ol id="leaderboardList" class="leaderboard-list" aria-label="Top scores"></ol>
+      <div id="emptyLeaderboard" class="empty-state" hidden>No scores yet. Be the first degen on the board.</div>
+
+      <form id="scoreForm" class="score-form">
+        <label for="playerName">SUBMIT YOUR <span id="submitScoreValue">0</span> POPS</label>
+        <div class="submit-row">
+          <input id="playerName" name="name" type="text" maxlength="16" autocomplete="nickname" placeholder="Your name" aria-describedby="nameHelp" required />
+          <button id="submitButton" type="submit">SUBMIT</button>
+        </div>
+        <div id="nameHelp" class="form-help">1–16 characters: letters, numbers, spaces, _ . -</div>
+        <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </div>
+
+  <noscript>This site needs JavaScript for the clicker and leaderboard.</noscript>
+  <script src="/app.js" defer></script>
+</body>
+</html>

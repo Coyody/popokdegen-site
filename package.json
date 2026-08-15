@@ -1,0 +1,13 @@
+{
+  "name": "popokdegen",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "preview:static": "python3 -m http.server 8788 --directory public",
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy public --project-name popokdegen"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
