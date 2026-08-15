@@ -65,6 +65,17 @@
   let comboTimer = null;
   const COMBO_RESET_MS = 800;
 
+  const PERSONAL_BEST_STORAGE = 'wethdegen-personal-best';
+  const HIGHEST_COMBO_STORAGE = 'wethdegen-highest-combo';
+  
+  let personalBest = Number(
+    localStorage.getItem(PERSONAL_BEST_STORAGE) || 0
+  );
+  
+  let highestCombo = Number(
+    localStorage.getItem(HIGHEST_COMBO_STORAGE) || 0
+  );
+
   const ACHIEVEMENTS_STORAGE = 'wethdegen-achievements';
 
 const ACHIEVEMENTS = [
@@ -125,8 +136,82 @@ const ACHIEVEMENTS = [
     popBurst.classList.add('animate');
   }
 
+  function renderStats() {
+  const personalBestStat = $('personalBestStat');
+  const highestComboStat = $('highestComboStat');
+
+  if (personalBestStat) {
+    personalBestStat.textContent = personalBest.toLocaleString();
+  }
+
+  if (highestComboStat) {
+    highestComboStat.textContent =
+      highestCombo >= 25
+        ? `x${highestCombo.toLocaleString()}`
+        : 'x0';
+  }
+}
+
+function updatePersonalBest() {
+  if (score > personalBest) {
+    personalBest = score;
+
+    localStorage.setItem(
+      PERSONAL_BEST_STORAGE,
+      String(personalBest)
+    );
+
+    renderStats();
+  }
+}
+
+function updateHighestCombo() {
+  if (
+    comboCount >= 25 &&
+    comboCount > highestCombo
+  ) {
+    highestCombo = comboCount;
+
+    localStorage.setItem(
+      HIGHEST_COMBO_STORAGE,
+      String(highestCombo)
+    );
+
+    renderStats();
+  }
+}
+
+function openStats() {
+  const backdrop = $('statsBackdrop');
+
+  if (!backdrop) return;
+
+  renderStats();
+
+  backdrop.hidden = false;
+  document.body.classList.add('modal-open');
+
+  if (siteMenu) {
+    siteMenu.hidden = true;
+  }
+
+  if (menuButton) {
+    menuButton.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function closeStats() {
+  const backdrop = $('statsBackdrop');
+
+  if (!backdrop) return;
+
+  backdrop.hidden = true;
+  document.body.classList.remove('modal-open');
+}
+
   function updateCombo() {
   comboCount += 1;
+  updateHighestCombo();
 
   clearTimeout(comboTimer);
 
@@ -398,6 +483,7 @@ async function flushGlobalClicks() {
 
   score += 1;
   renderScore();
+  updatePersonalBest();
   queueGlobalClick();
   checkAchievements();
   updateCombo();
@@ -634,6 +720,23 @@ refreshLeaderboard.addEventListener('click', () => {
   loadGlobalTotal();
 });
 
+  const statsButton = $('statsButton');
+const closeStatsButton = $('closeStats');
+const statsBackdrop = $('statsBackdrop');
+
+statsButton?.addEventListener('click', openStats);
+
+closeStatsButton?.addEventListener(
+  'click',
+  closeStats
+);
+
+statsBackdrop?.addEventListener('click', (event) => {
+  if (event.target === statsBackdrop) {
+    closeStats();
+  }
+});
+
 const shareScoreButton = $('shareScoreButton');
 
 shareScoreButton?.addEventListener('click', () => {
@@ -704,6 +807,7 @@ shareScoreButton?.addEventListener('click', () => {
   loadGlobalTotal();
   renderAchievements();
   checkAchievements();
+  renderStats();
 
 // Start a server-side timing session early when the backend exists.
 ensureSession();
