@@ -84,15 +84,24 @@
   }
 
   function press() {
-    if (pressed) return;
-    pressed = true;
-    degenButton.classList.add('is-down');
-    degenImage.src = CLICKED;
-    score += 1;
-    renderScore();
-    playPop();
-    animatePlusOne();
+  if (pressed) return;
+  pressed = true;
+
+  degenButton.classList.add('is-down');
+  degenImage.src = CLICKED;
+
+  score += 1;
+  renderScore();
+  playPop();
+
+  if (/^(69)+$/.test(String(score))) {
+    popBurst.textContent = 'Nice!';
+  } else {
+    popBurst.textContent = '+1';
   }
+
+  animatePlusOne();
+}
 
   function release() {
     if (!pressed) return;
