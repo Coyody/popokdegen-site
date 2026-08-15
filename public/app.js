@@ -25,12 +25,6 @@
   const submitScoreValue = $('submitScoreValue');
   const formStatus = $('formStatus');
 
-  const achievementsButton = $('achievementsButton');
-
-  achievementsButton?.addEventListener('click', () => {
-    alert('Achievements coming soon!');
-  });
-
   const NORMAL = '/assets/normal.png';
   const CLICKED = '/assets/clicked.png';
   const BLAZE_IDLE = '/assets/420Idle.png';
@@ -66,6 +60,21 @@
   let pendingGlobalClicks = 0;
   let globalSyncTimer = null;
   let globalSyncInFlight = false;
+
+  const ACHIEVEMENTS_STORAGE = 'wethdegen-achievements';
+
+const ACHIEVEMENTS = [
+  { id: 'first-weth', name: 'First WETH', target: 1 },
+  { id: 'nice', name: 'NICE!', target: 69 },
+  { id: 'weth-noob', name: 'WETH Noob', target: 200 },
+  { id: 'weth-blazer', name: 'WETH Blazer', target: 420 },
+  { id: 'weth-rookie', name: 'WETH Rookie', target: 1000 },
+  { id: 'weth-chad', name: 'WETH Chad', target: 2500 },
+  { id: 'weth-lord', name: 'WETH Lord', target: 5000 },
+  { id: 'weth-god', name: 'WETH GOD', target: 7500 },
+  { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
+  { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 }
+];
 
   const audioPool = Array.from({ length: 8 }, () => {
     const audio = new Audio('/assets/pop.mp3');
@@ -108,6 +117,111 @@
     void popBurst.offsetWidth;
     popBurst.classList.add('animate');
   }
+
+  function getUnlockedAchievements() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(ACHIEVEMENTS_STORAGE) || '[]'
+    );
+  } catch (_) {
+    return [];
+  }
+}
+
+function saveUnlockedAchievements(unlocked) {
+  localStorage.setItem(
+    ACHIEVEMENTS_STORAGE,
+    JSON.stringify(unlocked)
+  );
+}
+
+function renderAchievements() {
+  const unlocked = getUnlockedAchievements();
+
+  ACHIEVEMENTS.forEach((achievement) => {
+    const item = document.querySelector(
+      `[data-achievement="${achievement.id}"]`
+    );
+
+    if (!item) return;
+
+    const icon = item.querySelector('.achievement-icon');
+    const isUnlocked = unlocked.includes(achievement.id);
+
+    item.classList.toggle('unlocked', isUnlocked);
+
+    if (icon) {
+      icon.textContent = isUnlocked ? '🏅' : '🔒';
+    }
+  });
+
+  const count = $('achievementUnlockedCount');
+
+  if (count) {
+    count.textContent = unlocked.length;
+  }
+}
+
+function checkAchievements() {
+  const unlocked = getUnlockedAchievements();
+  let changed = false;
+
+  ACHIEVEMENTS.forEach((achievement) => {
+    if (
+      score >= achievement.target &&
+      !unlocked.includes(achievement.id)
+    ) {
+      unlocked.push(achievement.id);
+      changed = true;
+
+      const item = document.querySelector(
+        `[data-achievement="${achievement.id}"]`
+      );
+
+      if (item) {
+        item.classList.add('just-unlocked');
+
+        setTimeout(() => {
+          item.classList.remove('just-unlocked');
+        }, 600);
+      }
+    }
+  });
+
+  if (changed) {
+    saveUnlockedAchievements(unlocked);
+  }
+
+  renderAchievements();
+}
+
+function openAchievements() {
+  const backdrop = $('achievementsBackdrop');
+
+  if (!backdrop) return;
+
+  renderAchievements();
+
+  backdrop.hidden = false;
+  document.body.classList.add('modal-open');
+
+  if (typeof siteMenu !== 'undefined' && siteMenu) {
+    siteMenu.hidden = true;
+  }
+
+  if (typeof menuButton !== 'undefined' && menuButton) {
+    menuButton.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function closeAchievements() {
+  const backdrop = $('achievementsBackdrop');
+
+  if (!backdrop) return;
+
+  backdrop.hidden = true;
+  document.body.classList.remove('modal-open');
+}
 
   async function loadGlobalTotal() {
   const globalTotal = $('globalTotal');
@@ -199,6 +313,7 @@ async function flushGlobalClicks() {
   score += 1;
   renderScore();
   queueGlobalClick();
+  checkAchievements();
 
   /* Special clicked artwork only when score hits exactly 420 */
   if (score === 420) {
@@ -410,6 +525,23 @@ document.addEventListener('click', (event) => {
   leaderboardButton.addEventListener('click', openModal);
 closeModal.addEventListener('click', closeLeaderboard);
 
+  const achievementsButton = $('achievementsButton');
+  const closeAchievementsButton = $('closeAchievements');
+  const achievementsBackdrop = $('achievementsBackdrop');
+  
+  achievementsButton?.addEventListener('click', openAchievements);
+  
+  closeAchievementsButton?.addEventListener(
+    'click',
+    closeAchievements
+  );
+  
+  achievementsBackdrop?.addEventListener('click', (event) => {
+    if (event.target === achievementsBackdrop) {
+      closeAchievements();
+    }
+  });
+
 refreshLeaderboard.addEventListener('click', () => {
   loadLeaderboard();
   loadGlobalTotal();
@@ -481,8 +613,10 @@ shareScoreButton?.addEventListener('click', () => {
   });
 
   renderScore();
-renderMute();
-loadGlobalTotal();
+  renderMute();
+  loadGlobalTotal();
+  renderAchievements();
+  checkAchievements();
 
 // Start a server-side timing session early when the backend exists.
 ensureSession();
