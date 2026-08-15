@@ -944,3 +944,148 @@ body.modal-open { overflow: hidden; }
   transform: translateY(3px);
   box-shadow: 0 1px 0 #080808;
 }
+
+/* ===== ACHIEVEMENTS ===== */
+
+.achievements-modal {
+  width: min(560px, 100%);
+}
+
+.achievement-progress {
+  margin: 14px 0;
+  padding: 10px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 3px solid #080808;
+  border-radius: 12px;
+
+  background: #ffe968;
+
+  font-size: 13px;
+}
+
+.achievement-progress strong {
+  font-size: 18px;
+}
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.achievement-item {
+  min-height: 62px;
+  padding: 10px 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  border: 3px solid #080808;
+  border-radius: 13px;
+
+  background: #d9d9d9;
+  opacity: 0.58;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    opacity 160ms ease;
+}
+
+.achievement-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #080808;
+  border-radius: 50%;
+
+  background: #b9b9b9;
+
+  font-size: 20px;
+}
+
+.achievement-info {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.achievement-info strong {
+  font-size: 14px;
+}
+
+.achievement-info span {
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* Unlocked achievement */
+.achievement-item.unlocked {
+  background: #ffe968;
+  opacity: 1;
+  box-shadow: 0 4px 0 #080808;
+}
+
+.achievement-item.unlocked .achievement-icon {
+  background: #ffffff;
+}
+
+/* Small pop when newly unlocked */
+.achievement-item.just-unlocked {
+  animation: achievementUnlock 500ms ease;
+}
+
+@keyframes achievementUnlock {
+  0% {
+    transform: scale(0.94);
+  }
+
+  50% {
+    transform: scale(1.04) rotate(-1deg);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .achievements-modal {
+    max-height: 88dvh;
+  }
+
+  .achievement-item {
+    min-height: 58px;
+    padding: 9px 10px;
+  }
+
+  .achievement-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    font-size: 18px;
+  }
+
+  .achievement-info strong {
+    font-size: 13px;
+  }
+
+  .achievement-info span {
+    font-size: 10px;
+  }
+}
