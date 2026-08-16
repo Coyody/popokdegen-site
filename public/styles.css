@@ -1725,3 +1725,27 @@ body.modal-open { overflow: hidden; }
   transform-origin: 50% 100%;
   transform: translate(-30px, 26px) scale(1.045);
 }
+
+/* ===== ENDRY MOBILE POSITION ===== */
+
+@media (max-width: 700px) {
+
+  .degen-button[data-degen="endry"]
+  .degen-image:not(.blaze-image),
+
+  .degen-button[data-degen="endry"]
+  .degen-image.blaze-image {
+    transform-origin: 50% 100%;
+    transform: translate(-8px, 26px) scale(1.06);
+  }
+
+  .degen-button[data-degen="endry"].is-down
+  .degen-image:not(.blaze-image),
+
+  .degen-button[data-degen="endry"].is-down
+  .degen-image.blaze-image {
+    transform-origin: 50% 100%;
+    transform: translate(-8px, 26px) scale(1.045);
+  }
+
+}
