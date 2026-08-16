@@ -107,6 +107,13 @@ const ACHIEVEMENTS = [
   { id: 'weth-god', name: 'WETH GOD', target: 7500 },
   { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
   { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 }
+  { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
+  { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 },
+  { id: 'max-wether', name: "Max WETH'ER", target: 250000 },
+  { id: 'titan-wether', name: "Titan WETH'ER", target: 500000 },
+  { id: 'holy-weth', name: 'Holy WETH', target: 750000 },
+  { id: 'king-weth', name: 'King WETH', target: 1000000 },
+  { id: 'absolute-degen', name: 'Absolute Degen', target: 6696696 }
 ];
 
   let achievementToastQueue = [];
