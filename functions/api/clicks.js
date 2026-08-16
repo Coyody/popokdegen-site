@@ -40,7 +40,7 @@ export async function onRequest(context) {
     return json({ error: 'Invalid session' }, 400);
   }
 
-  // Browser may send at most 10 accepted clicks per batch.
+  // Browser may send at most 10 verified clicks per batch.
   if (
     !Number.isInteger(clicks) ||
     clicks < 1 ||
@@ -73,6 +73,9 @@ export async function onRequest(context) {
     );
   }
 
+  const currentServerScore =
+    Number(session.server_score || 0);
+
   const expectedSeq =
     Number(session.batch_seq || 0) + 1;
 
@@ -80,7 +83,8 @@ export async function onRequest(context) {
     return json(
       {
         error: 'Invalid batch sequence',
-        expectedSeq
+        expectedSeq,
+        serverScore: currentServerScore
       },
       409
     );
@@ -97,18 +101,15 @@ export async function onRequest(context) {
   const elapsedSeconds =
     elapsedMs / 1000;
 
-  const currentServerScore =
-    Number(session.server_score || 0);
-
   const proposedScore =
     currentServerScore + clicks;
 
   /*
-    Your browser currently accepts roughly
-    12.5 clicks/sec max because of the 80ms rule.
+    Browser currently accepts roughly
+    12.5 clicks/sec because of the 80ms rule.
 
-    Server allows 13/sec plus a small 5-click
-    startup allowance for timing/network jitter.
+    Server allows 13/sec plus a small
+    5-click startup allowance.
   */
   const maxAllowedScore =
     Math.floor(elapsedSeconds * 13) + 5;
@@ -124,9 +125,8 @@ export async function onRequest(context) {
   }
 
   /*
-    Atomic update:
-    only succeeds if nobody has already used
-    this sequence number.
+    Only update the session if this is exactly
+    the sequence number Cloudflare expects.
   */
   const result = await DB.prepare(`
     UPDATE sessions
@@ -152,15 +152,72 @@ export async function onRequest(context) {
     );
   }
 
+  /*
+    A successful SQL request does not necessarily
+    mean a row was changed.
+
+    We require EXACTLY one session row to have
+    been updated before counting these clicks.
+  */
+  if (Number(result.meta?.changes || 0) !== 1) {
+    const latest = await DB.prepare(`
+      SELECT server_score, batch_seq
+      FROM sessions
+      WHERE id = ?
+    `).bind(sessionId).first();
+
+    return json(
+      {
+        error: 'Click batch was not accepted',
+        expectedSeq:
+          Number(latest?.batch_seq || 0) + 1,
+        serverScore:
+          Number(latest?.server_score || 0)
+      },
+      409
+    );
+  }
+
+  /*
+    The click batch has now been verified.
+
+    ONLY verified server clicks are allowed
+    to increase GLOBAL WETH'D.
+  */
+  const globalResult = await DB.prepare(`
+    INSERT INTO global_stats (id, total)
+    VALUES (1, ?)
+
+    ON CONFLICT(id) DO UPDATE SET
+      total = global_stats.total + excluded.total
+  `).bind(clicks).run();
+
+  if (!globalResult.success) {
+    return json(
+      { error: 'Could not update global total' },
+      500
+    );
+  }
+
   const updated = await DB.prepare(`
     SELECT server_score, batch_seq
     FROM sessions
     WHERE id = ?
   `).bind(sessionId).first();
 
+  const globalRow = await DB.prepare(`
+    SELECT total
+    FROM global_stats
+    WHERE id = 1
+  `).first();
+
   return json({
     ok: true,
-    serverScore: Number(updated?.server_score || 0),
-    nextSeq: Number(updated?.batch_seq || 0) + 1
+    serverScore:
+      Number(updated?.server_score || 0),
+    nextSeq:
+      Number(updated?.batch_seq || 0) + 1,
+    globalTotal:
+      Number(globalRow?.total || 0)
   });
 }
