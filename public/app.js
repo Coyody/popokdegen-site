@@ -168,7 +168,15 @@ const ACHIEVEMENTS = [
     audio.preload = 'auto';
     return audio;
   });
+  
+  const endryAudioPool = Array.from({ length: 8 }, () => {
+    const audio = new Audio('/assets/EndryFart.mp3');
+    audio.preload = 'auto';
+    return audio;
+  });
+  
   let audioIndex = 0;
+  let endryAudioIndex = 0;
 
   function formatScore(value) {
     return Number(value || 0).toLocaleString('en-US');
@@ -189,11 +197,37 @@ const ACHIEVEMENTS = [
 
   function playPop() {
     if (muted) return;
-    const audio = audioPool[audioIndex++ % audioPool.length];
+  
+    const selectedDegen =
+      getSelectedDegen();
+  
+    let audio;
+  
+    if (selectedDegen.id === 'endry') {
+      audio =
+        endryAudioPool[
+          endryAudioIndex++ %
+          endryAudioPool.length
+        ];
+    } else {
+      audio =
+        audioPool[
+          audioIndex++ %
+          audioPool.length
+        ];
+    }
+  
     try {
       audio.currentTime = 0;
+  
       const p = audio.play();
-      if (p && typeof p.catch === 'function') p.catch(() => {});
+  
+      if (
+        p &&
+        typeof p.catch === 'function'
+      ) {
+        p.catch(() => {});
+      }
     } catch (_) {}
   }
 
