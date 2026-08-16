@@ -131,8 +131,8 @@
     idle: '/assets/EndryIdle.png',
     clicked: '/assets/EndryClicked.png',
     background: '/assets/EndryBackground.png',
-    special420Idle: '/assets/Endry420Idle.png',
-    special420Clicked: '/assets/Endry420Clicked.png'
+    special420Idle: '/assets/420EndryIdle.png',
+    special420Clicked: '/assets/420EndryClicked.png'
   }
 ];
 
