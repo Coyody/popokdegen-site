@@ -272,7 +272,7 @@ const ACHIEVEMENTS = [
   showWethyEvent.hideTimer =
     setTimeout(() => {
       wethy.classList.remove('show');
-    }, 4100);
+    }, 3400);
 }
 
 function updatePersonalBest() {
