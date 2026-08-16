@@ -108,7 +108,9 @@
     artworkReady: true,
     idle: '/assets/normal.png',
     clicked: '/assets/clicked.png',
-    background: null
+    background: null,
+    special420Idle: '/assets/420Idle.png',
+    special420Clicked: '/assets/420Clicked.png'
   },
   {
     id: 'thanos',
@@ -117,7 +119,9 @@
     artworkReady: false,
     idle: null,
     clicked: null,
-    background: null
+    background: null,
+    special420Idle: null,
+    special420Clicked: null
   },
   {
     id: 'endry',
@@ -126,7 +130,9 @@
     artworkReady: true,
     idle: '/assets/EndryIdle.png',
     clicked: '/assets/EndryClicked.png',
-    background: '/assets/EndryBackground.png'
+    background: '/assets/EndryBackground.png',
+    special420Idle: '/assets/Endry420Idle.png',
+    special420Clicked: '/assets/Endry420Clicked.png'
   }
 ];
 
@@ -313,6 +319,17 @@ function getSelectedDegen() {
   return degen;
 }
 
+  function getSelectedDegen420Art() {
+  const degen = getSelectedDegen();
+
+  return {
+    idle:
+      degen.special420Idle || BLAZE_IDLE,
+    clicked:
+      degen.special420Clicked || BLAZE_CLICKED
+  };
+}
+
 function applySelectedDegen() {
   const degen = getSelectedDegen();
   degenButton.dataset.degen = degen.id;
@@ -322,11 +339,20 @@ function applySelectedDegen() {
    * the current score is exactly 420.
    */
   if (score === 420) {
-    degenImage.src = BLAZE_IDLE;
-    degenImage.classList.add('blaze-image');
+    const special420 =
+      getSelectedDegen420Art();
+  
+    degenImage.src =
+      special420.idle;
+  
+    degenImage.classList.add(
+      'blaze-image'
+    );
   } else {
     degenImage.src = degen.idle;
-    degenImage.classList.remove('blaze-image');
+    degenImage.classList.remove(
+      'blaze-image'
+    );
   }
 
   /*
@@ -1158,8 +1184,15 @@ async function passDegenCheck() {
 
   /* Special clicked artwork only when score hits exactly 420 */
 if (score === 420) {
-  degenImage.src = BLAZE_CLICKED;
-  degenImage.classList.add('blaze-image');
+  const special420 =
+    getSelectedDegen420Art();
+
+  degenImage.src =
+    special420.clicked;
+
+  degenImage.classList.add(
+    'blaze-image'
+  );
 } else {
   const selectedDegen =
     getSelectedDegen();
@@ -1200,15 +1233,22 @@ if (score === 420) {
   degenButton.classList.remove('is-down');
 
   if (score === 420) {
-    degenImage.src = BLAZE_IDLE;
-    degenImage.classList.add('blaze-image');
+    const special420 =
+      getSelectedDegen420Art();
+  
+    degenImage.src =
+      special420.idle;
+  
+    degenImage.classList.add(
+      'blaze-image'
+    );
   } else {
     const selectedDegen =
       getSelectedDegen();
-
+  
     degenImage.src =
       selectedDegen.idle;
-
+  
     degenImage.classList.remove(
       'blaze-image'
     );
