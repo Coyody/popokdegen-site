@@ -399,20 +399,29 @@ function applySelectedDegen() {
     document.body.style.backgroundSize = '';
     document.body.style.backgroundRepeat = '';
     document.body.style.backgroundPosition = '';
+    document.body.style.backgroundColor = '';
+  
+    document.documentElement.style.backgroundColor = '';
   } else if (degen.background) {
     document.body.style.backgroundImage =
       `url("${degen.background}")`;
-
+  
     document.body.style.backgroundSize =
       'cover';
-
+  
     document.body.style.backgroundRepeat =
       'no-repeat';
-
+  
     document.body.style.backgroundPosition =
       'center center';
+  
+    document.body.style.backgroundColor =
+      '#d4d4d3';
+  
+    document.documentElement.style.backgroundColor =
+      '#d4d4d3';
   }
-}
+  }
 
   function renderDegens() {
   const activeDegen = getSelectedDegen();
