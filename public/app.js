@@ -59,11 +59,9 @@
   let sessionPromise = null;
   
   let globalTotalValue = 0;
-  let pendingGlobalClicks = 0;
-  let globalSyncTimer = null;
-  let globalSyncInFlight = false;
 
   let pendingServerClicks = 0;
+  
   let serverBatchSeq = 1;
   let serverSyncTimer = null;
   let serverSyncInFlight = false;
@@ -442,67 +440,6 @@ function closeAchievements() {
   }
 }
 
-function queueGlobalClick() {
-  pendingGlobalClicks += 1;
-  globalTotalValue += 1;
-
-  const globalTotal = $('globalTotal');
-
-  if (globalTotal) {
-    globalTotal.textContent = globalTotalValue.toLocaleString();
-  }
-
-  clearTimeout(globalSyncTimer);
-
-  if (pendingGlobalClicks >= 10) {
-    flushGlobalClicks();
-  } else {
-    globalSyncTimer = setTimeout(flushGlobalClicks, 1000);
-  }
-}
-
-async function flushGlobalClicks() {
-  if (globalSyncInFlight || pendingGlobalClicks === 0) return;
-
-  globalSyncInFlight = true;
-
-  const clicks = Math.min(pendingGlobalClicks, 100);
-  pendingGlobalClicks -= clicks;
-
-  try {
-    const response = await fetch('/api/global', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({ clicks })
-    });
-
-    if (!response.ok) throw new Error('Could not update global total');
-
-    const data = await response.json();
-
-    globalTotalValue = Number(data.total || globalTotalValue);
-
-    const globalTotal = $('globalTotal');
-
-    if (globalTotal) {
-      globalTotal.textContent = globalTotalValue.toLocaleString();
-    }
-  } catch (error) {
-    console.error('Global counter update failed:', error);
-
-    pendingGlobalClicks += clicks;
-  } finally {
-    globalSyncInFlight = false;
-
-    if (pendingGlobalClicks > 0) {
-      clearTimeout(globalSyncTimer);
-      globalSyncTimer = setTimeout(flushGlobalClicks, 1000);
-    }
-  }
-}
-
   function queueServerClick() {
   pendingServerClicks += 1;
 
@@ -581,10 +518,21 @@ async function flushServerClicks() {
     }
 
     serverAuthoritativeScore =
-      Number(data.serverScore || 0);
+  Number(data.serverScore || 0);
 
-    serverBatchSeq =
-      Number(data.nextSeq || serverBatchSeq + 1);
+  if (Number.isFinite(Number(data.globalTotal))) {
+    globalTotalValue = Number(data.globalTotal);
+  
+    const globalTotal = $('globalTotal');
+  
+    if (globalTotal) {
+      globalTotal.textContent =
+        globalTotalValue.toLocaleString();
+    }
+  }
+  
+  serverBatchSeq =
+    Number(data.nextSeq || serverBatchSeq + 1);
 
   } catch (error) {
     console.warn(
@@ -822,7 +770,6 @@ async function passDegenCheck() {
   score += 1;
   renderScore();
   updatePersonalBest();
-  queueGlobalClick();
   queueServerClick();
   checkAchievements();
   updateCombo();
