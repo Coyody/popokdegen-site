@@ -83,10 +83,9 @@
       <span>OpenSea</span>
     </a>
 
-    <button id="muteButton" class="menu-item" type="button"
-      aria-pressed="false">
-      <span id="muteIcon" aria-hidden="true">🔊</span>
-      <span id="muteText">Sound On</span>
+    <button id="soundButton" class="menu-item" type="button">
+      <span aria-hidden="true">🔊</span>
+      <span>Sound</span>
     </button>
 
   </div>
@@ -346,6 +345,77 @@
 </div>
 
     </section>
+
+</div>
+
+  <!-- SOUND MODAL -->
+<div id="soundBackdrop" class="modal-backdrop" hidden>
+
+  <section
+    id="soundModal"
+    class="modal sound-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="soundTitle"
+  >
+
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">AUDIO CONTROLS</div>
+        <h1 id="soundTitle">SOUND</h1>
+      </div>
+
+      <button
+        id="closeSound"
+        class="close-button"
+        type="button"
+        aria-label="Close Sound"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="sound-control">
+
+      <div class="sound-control-head">
+        <span>MUSIC</span>
+        <span id="musicVolumeValue">70</span>
+      </div>
+
+      <input
+        id="musicVolume"
+        class="sound-slider"
+        type="range"
+        min="0"
+        max="100"
+        value="70"
+        step="1"
+        aria-label="Music volume"
+      >
+
+    </div>
+
+    <div class="sound-control">
+
+      <div class="sound-control-head">
+        <span>GAME SOUND</span>
+        <span id="gameVolumeValue">100</span>
+      </div>
+
+      <input
+        id="gameVolume"
+        class="sound-slider"
+        type="range"
+        min="0"
+        max="100"
+        value="100"
+        step="1"
+        aria-label="Game sound volume"
+      >
+
+    </div>
+
+  </section>
 
 </div>
 
