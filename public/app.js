@@ -254,6 +254,27 @@ const ACHIEVEMENTS = [
   }
 }
 
+  function showWethyEvent() {
+  const wethy = $('wethyEvent');
+
+  if (!wethy) return;
+
+  wethy.classList.remove('show');
+
+  void wethy.offsetWidth;
+
+  wethy.classList.add('show');
+
+  clearTimeout(
+    showWethyEvent.hideTimer
+  );
+
+  showWethyEvent.hideTimer =
+    setTimeout(() => {
+      wethy.classList.remove('show');
+    }, 4100);
+}
+
 function updatePersonalBest() {
   if (score > personalBest) {
     const previousBest = personalBest;
@@ -1221,6 +1242,14 @@ async function passDegenCheck() {
   score += 1;
   renderScore();
   updatePersonalBest();
+  
+  if (
+    score > 0 &&
+    score % 100 === 0
+  ) {
+    showWethyEvent();
+  }
+  
   queueServerClick();
   checkAchievements();
   updateCombo();
