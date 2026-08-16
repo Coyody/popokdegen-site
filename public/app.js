@@ -98,6 +98,27 @@
     localStorage.getItem(HIGHEST_COMBO_STORAGE) || 0
   );
 
+  const DEGENS = [
+  {
+    id: 'base',
+    name: 'Base Degen',
+    target: 0,
+    artworkReady: true
+  },
+  {
+    id: 'thanos',
+    name: 'Thanos',
+    target: 420,
+    artworkReady: false
+  },
+  {
+    id: 'endry',
+    name: 'Endry',
+    target: 666,
+    artworkReady: false
+  }
+];
+
   const ACHIEVEMENTS_STORAGE = 'wethdegen-achievements';
 
 const ACHIEVEMENTS = [
@@ -188,6 +209,7 @@ function updatePersonalBest() {
     );
 
     renderStats();
+    renderDegens();
   }
 }
 
@@ -233,6 +255,123 @@ function closeStats() {
 
   backdrop.hidden = true;
   document.body.classList.remove('modal-open');
+}
+
+  function renderDegens() {
+  DEGENS.forEach((degen) => {
+    const card = document.querySelector(
+      `[data-degen="${degen.id}"]`
+    );
+
+    if (!card) return;
+
+    const requirement = card.querySelector(
+      '[data-degen-requirement]'
+    );
+
+    const button = card.querySelector(
+      '[data-select-degen]'
+    );
+
+    const isUnlocked =
+      degen.target === 0 ||
+      personalBest >= degen.target;
+
+    card.classList.toggle(
+      'locked',
+      !isUnlocked
+    );
+
+    card.classList.toggle(
+      'unlocked',
+      isUnlocked
+    );
+
+    if (requirement) {
+      if (degen.id === 'base') {
+        requirement.textContent =
+          '✅ ALWAYS UNLOCKED';
+      }
+
+      else if (isUnlocked) {
+        requirement.textContent =
+          '✅ UNLOCKED';
+      }
+
+      else {
+        requirement.textContent =
+          `🔒 ${degen.target.toLocaleString()} CLICKS`;
+      }
+    }
+
+    if (button) {
+      if (degen.id === 'base') {
+        button.disabled = false;
+        button.textContent = 'SELECTED';
+      }
+
+      else if (!isUnlocked) {
+        button.disabled = true;
+        button.textContent = 'LOCKED';
+      }
+
+      else if (!degen.artworkReady) {
+        button.disabled = true;
+        button.textContent = 'ART COMING SOON';
+      }
+    }
+  });
+}
+
+function openDegens() {
+  const backdrop = $('degensBackdrop');
+
+  if (!backdrop) return;
+
+  renderDegens();
+
+  const status = $('degensStatus');
+
+  if (status) {
+    status.textContent = '';
+  }
+
+  backdrop.hidden = false;
+  document.body.classList.add('modal-open');
+
+  if (siteMenu) {
+    siteMenu.hidden = true;
+  }
+
+  if (menuButton) {
+    menuButton.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+  }
+
+  const closeButton = $('closeDegens');
+
+  if (closeButton) {
+    setTimeout(() => {
+      closeButton.focus();
+    }, 0);
+  }
+}
+
+function closeDegens() {
+  const backdrop = $('degensBackdrop');
+
+  if (!backdrop) return;
+
+  backdrop.hidden = true;
+  document.body.classList.remove('modal-open');
+
+  const button = $('degensButton');
+
+  if (button) {
+    button.focus();
+  }
 }
 
   function updateCombo() {
@@ -1088,6 +1227,60 @@ statsBackdrop?.addEventListener('click', (event) => {
   }
 });
 
+  const degensButton = $('degensButton');
+const closeDegensButton = $('closeDegens');
+const degensBackdrop = $('degensBackdrop');
+
+degensButton?.addEventListener(
+  'click',
+  openDegens
+);
+
+closeDegensButton?.addEventListener(
+  'click',
+  closeDegens
+);
+
+degensBackdrop?.addEventListener(
+  'click',
+  (event) => {
+    if (event.target === degensBackdrop) {
+      closeDegens();
+    }
+  }
+);
+
+document.addEventListener(
+  'keydown',
+  (event) => {
+    if (
+      event.key === 'Escape' &&
+      degensBackdrop &&
+      !degensBackdrop.hidden
+    ) {
+      closeDegens();
+    }
+  }
+);
+
+  document
+  .querySelectorAll('[data-select-degen]')
+  .forEach((button) => {
+    button.addEventListener('click', () => {
+      const degenId =
+        button.dataset.selectDegen;
+
+      const status = $('degensStatus');
+
+      if (!status) return;
+
+      if (degenId === 'base') {
+        status.textContent =
+          'Base Degen is already selected.';
+      }
+    });
+  });
+
 const degenCheckButton = $('degenCheckButton');
 
 degenCheckButton?.addEventListener('click', (event) => {
@@ -1177,6 +1370,7 @@ shareScoreButton?.addEventListener('click', () => {
   renderAchievements();
   checkAchievements();
   renderStats();
+  renderDegens();
 
 // Start a server-side timing session early when the backend exists.
 ensureSession();
