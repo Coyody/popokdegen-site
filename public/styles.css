@@ -1700,6 +1700,7 @@ body.modal-open { overflow: hidden; }
   Scale from the bottom so Endry matches Base
   visually without pushing the page downward.
 */
+/* ===== ENDRY NORMAL ART ===== */
 .degen-button[data-degen="endry"]
 .degen-image:not(.blaze-image) {
   transform-origin: 50% 100%;
@@ -1708,6 +1709,19 @@ body.modal-open { overflow: hidden; }
 
 .degen-button[data-degen="endry"].is-down
 .degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: translate(-30px, 26px) scale(1.045);
+}
+
+/* ===== ENDRY 420 ART ===== */
+.degen-button[data-degen="endry"]
+.degen-image.blaze-image {
+  transform-origin: 50% 100%;
+  transform: translate(-30px, 26px) scale(1.06);
+}
+
+.degen-button[data-degen="endry"].is-down
+.degen-image.blaze-image {
   transform-origin: 50% 100%;
   transform: translate(-30px, 26px) scale(1.045);
 }
