@@ -1703,20 +1703,11 @@ body.modal-open { overflow: hidden; }
 .degen-button[data-degen="endry"]
 .degen-image:not(.blaze-image) {
   transform-origin: 50% 100%;
-  transform: scale(1.06);
+  transform: translate(-30px, 26px) scale(1.06);
 }
 
-/*
-  Endry press effect.
-
-  IMPORTANT:
-  Do not use translateY here.
-  The old downward movement could briefly create
-  vertical page overflow and make the whole screen
-  shift when the scrollbar appeared.
-*/
 .degen-button[data-degen="endry"].is-down
 .degen-image:not(.blaze-image) {
   transform-origin: 50% 100%;
-  transform: scale(1.045);
+  transform: translate(-30px, 26px) scale(1.045);
 }
