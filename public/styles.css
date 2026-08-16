@@ -1749,3 +1749,56 @@ body.modal-open { overflow: hidden; }
   }
 
 }
+
+/* ===== WETHY 100 CLICK EVENT ===== */
+
+.wethy-event {
+  position: fixed;
+  left: 0;
+  bottom: 4%;
+  z-index: 90;
+
+  width: min(440px, 42vw);
+
+  pointer-events: none;
+
+  transform: translateX(-110%);
+}
+
+.wethy-event img {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.wethy-event.show {
+  animation: wethyVisit 4s ease-in-out forwards;
+}
+
+@keyframes wethyVisit {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  20% {
+    transform: translateX(0);
+  }
+
+  72% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-110%);
+  }
+}
+
+@media (max-width: 700px) {
+  .wethy-event {
+    width: min(360px, 72vw);
+    bottom: 7%;
+  }
+}
