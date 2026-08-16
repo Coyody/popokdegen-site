@@ -343,67 +343,6 @@ body.modal-open { overflow: hidden; }
   z-index: 20;
 }
 
-/* Volume + X + OpenSea row underneath leaderboard */
-.small-controls {
-  position: fixed;
-  top: 82px;
-  left: 20px;
-  z-index: 20;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Small round icon buttons */
-.small-icon-button {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-
-  padding: 0;
-  margin: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 3px solid #080808;
-  border-radius: 50%;
-  background: #fffef7;
-  color: #080808;
-  box-shadow: 0 4px 0 #080808;
-
-  text-decoration: none;
-  cursor: pointer;
-  line-height: 1;
-}
-
-/* Center volume icon */
-.small-icon-button #muteIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  line-height: 1;
-}
-
-/* Center image icons */
-.small-icon-button img {
-  display: block;
-  width: 21px;
-  height: 21px;
-  object-fit: contain;
-  margin: 0;
-}
-
-/* Slightly larger OpenSea icon */
-.small-icon-button[href*="opensea.io"] img {
-  width: 24px;
-  height: 24px;
-}
-
 /* Remove old bottom-right positioning */
 .actions a.action-button {
   position: static;
@@ -418,18 +357,6 @@ body.modal-open { overflow: hidden; }
   #leaderboardButton {
     top: 12px;
     left: 12px;
-  }
-
-  .small-controls {
-    top: 70px;
-    left: 12px;
-  }
-
-  .small-icon-button {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    min-height: 40px;
   }
 }
 
@@ -468,37 +395,6 @@ body.modal-open { overflow: hidden; }
     font-size: 11px;
     border-width: 3px;
     box-shadow: 0 3px 0 #080808;
-  }
-
-  /* Volume / X / OpenSea */
-  .small-controls {
-    top: 59px;
-    left: 10px;
-    gap: 6px;
-  }
-
-  .small-icon-button {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-
-    border-width: 3px;
-    box-shadow: 0 3px 0 #080808;
-  }
-
-  .small-icon-button img {
-    width: 18px;
-    height: 18px;
-  }
-
-  .small-icon-button[href*="opensea.io"] img {
-    width: 20px;
-    height: 20px;
-  }
-
-  .small-icon-button #muteIcon {
-    font-size: 16px;
   }
 
   /* Give controls some breathing room */
@@ -574,30 +470,6 @@ body.modal-open { overflow: hidden; }
     min-height: 42px;
     padding: 8px 12px;
     font-size: 12px;
-  }
-
-  /* Sound / X / OpenSea directly underneath */
-  .small-controls {
-    top: 66px;
-    left: 12px;
-    gap: 7px;
-  }
-
-  .small-icon-button {
-    width: 39px;
-    height: 39px;
-    min-width: 39px;
-    min-height: 39px;
-  }
-
-  .small-icon-button img {
-    width: 19px;
-    height: 19px;
-  }
-
-  .small-icon-button[href*="opensea.io"] img {
-    width: 22px;
-    height: 22px;
   }
 
   /* Pull score closer to logo */
