@@ -4,13 +4,19 @@
   const $ = (id) => document.getElementById(id);
   const menuButton = $('menuButton');
   const siteMenu = $('siteMenu');
-  const muteText = $('muteText');
+  const soundButton = $('soundButton');
+  const soundBackdrop = $('soundBackdrop');
+  const closeSoundButton = $('closeSound');
+  
+  const musicVolumeSlider = $('musicVolume');
+  const musicVolumeValue = $('musicVolumeValue');
+  
+  const gameVolumeSlider = $('gameVolume');
+  const gameVolumeValue = $('gameVolumeValue');
   const scoreEl = $('score');
   const degenButton = $('degenButton');
   const degenImage = $('degenImage');
   const popBurst = $('popBurst');
-  const muteButton = $('muteButton');
-  const muteIcon = $('muteIcon');
   const leaderboardButton = $('leaderboardButton');
   const modalBackdrop = $('modalBackdrop');
   const leaderboardModal = $('leaderboardModal');
@@ -45,7 +51,11 @@
   const STORAGE_SCORE = 'okdegenScore';
   const STORAGE_SESSION = 'okdegenSessionId';
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
-  const STORAGE_MUTE = 'okdegenMuted';
+  const MUSIC_VOLUME_STORAGE =
+  'wethdegen-music-volume';
+
+  const GAME_VOLUME_STORAGE =
+    'wethdegen-game-volume';
   const SELECTED_DEGEN_STORAGE =
   'wethdegen-selected-degen';
 
@@ -54,7 +64,36 @@
   sessionStorage.removeItem(STORAGE_SCORE);
   sessionStorage.removeItem(STORAGE_SESSION);
 
-  let muted = localStorage.getItem(STORAGE_MUTE) === '1';
+  function loadStoredVolume(key, fallback) {
+  const stored = localStorage.getItem(key);
+
+  if (stored === null) {
+    return fallback;
+  }
+
+  const value = Number(stored);
+
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+
+  return Math.min(
+    100,
+    Math.max(0, value)
+  );
+}
+
+let musicVolume =
+  loadStoredVolume(
+    MUSIC_VOLUME_STORAGE,
+    70
+  );
+
+let gameVolume =
+  loadStoredVolume(
+    GAME_VOLUME_STORAGE,
+    100
+  );
   let pressed = false;
   let backendMode = 'checking'; // checking | live | local
   let sessionId = '';
@@ -176,6 +215,117 @@ const ACHIEVEMENTS = [
   });
   
   let audioIndex = 0;
+
+let musicContext = null;
+let musicGainNode = null;
+let musicSourceNode = null;
+let musicStartPromise = null;
+
+async function startBackgroundMusic() {
+  if (musicSourceNode) {
+    if (
+      musicContext &&
+      musicContext.state === 'suspended'
+    ) {
+      try {
+        await musicContext.resume();
+      } catch (_) {}
+    }
+
+    return;
+  }
+
+  if (musicStartPromise) {
+    return musicStartPromise;
+  }
+
+  musicStartPromise = (async () => {
+    const AudioContextClass =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if (!AudioContextClass) {
+      return;
+    }
+
+    if (!musicContext) {
+      musicContext =
+        new AudioContextClass();
+    }
+
+    if (musicContext.state === 'suspended') {
+      await musicContext.resume();
+    }
+
+    const response =
+      await fetch('/assets/MenuMusic.mp3');
+
+    if (!response.ok) {
+      throw new Error(
+        'Could not load background music'
+      );
+    }
+
+    const audioData =
+      await response.arrayBuffer();
+
+    const musicBuffer =
+      await musicContext.decodeAudioData(
+        audioData
+      );
+
+    musicGainNode =
+      musicContext.createGain();
+
+    musicGainNode.gain.value =
+      musicVolume / 100;
+
+    musicGainNode.connect(
+      musicContext.destination
+    );
+
+    const source =
+      musicContext.createBufferSource();
+
+    source.buffer = musicBuffer;
+
+    source.loop = true;
+
+    source.connect(
+      musicGainNode
+    );
+
+    source.start(0);
+
+    musicSourceNode = source;
+  })()
+    .catch((error) => {
+      console.warn(
+        'Background music:',
+        error
+      );
+    })
+    .finally(() => {
+      musicStartPromise = null;
+    });
+
+  return musicStartPromise;
+}
+
+function updateMusicVolume() {
+  if (
+    !musicContext ||
+    !musicGainNode
+  ) {
+    return;
+  }
+
+  musicGainNode.gain.setValueAtTime(
+    musicVolume / 100,
+    musicContext.currentTime
+  );
+}
+  
   const wethyAudio =
     new Audio('/assets/WETHY.mp3');
 
@@ -191,49 +341,52 @@ const ACHIEVEMENTS = [
     submitScoreValue.textContent = formatScore(score);
   }
 
-  function renderMute() {
-    muteButton.setAttribute('aria-pressed', String(muted));
-    muteButton.setAttribute('aria-label', muted ? 'Unmute pop sound' : 'Mute pop sound');
-    muteButton.title = muted ? 'Unmute sound' : 'Mute sound';
-    muteIcon.textContent = muted ? '🔇' : '🔊';
-    muteText.textContent = muted ? 'Sound Off' : 'Sound On';
+  function renderSoundSettings() {
+    if (musicVolumeSlider) {
+      musicVolumeSlider.value =
+        String(musicVolume);
+    }
+  
+    if (musicVolumeValue) {
+      musicVolumeValue.textContent =
+        String(musicVolume);
+    }
+  
+    if (gameVolumeSlider) {
+      gameVolumeSlider.value =
+        String(gameVolume);
+    }
+  
+    if (gameVolumeValue) {
+      gameVolumeValue.textContent =
+        String(gameVolume);
+    }
   }
 
   function playPop() {
-    if (muted) return;
-  
-    const selectedDegen =
-      getSelectedDegen();
-  
-    let audio;
-  
-    if (selectedDegen.id === 'endry') {
-      audio =
-        endryAudioPool[
-          endryAudioIndex++ %
-          endryAudioPool.length
-        ];
-    } else {
-      audio =
-        audioPool[
-          audioIndex++ %
-          audioPool.length
-        ];
+  if (gameVolume <= 0) return;
+
+  const audio =
+    audioPool[
+      audioIndex++ % audioPool.length
+    ];
+
+  try {
+    audio.currentTime = 0;
+
+    audio.volume =
+      gameVolume / 100;
+
+    const p = audio.play();
+
+    if (
+      p &&
+      typeof p.catch === 'function'
+    ) {
+      p.catch(() => {});
     }
-  
-    try {
-      audio.currentTime = 0;
-  
-      const p = audio.play();
-  
-      if (
-        p &&
-        typeof p.catch === 'function'
-      ) {
-        p.catch(() => {});
-      }
-    } catch (_) {}
-  }
+  } catch (_) {}
+}
 
   function animatePlusOne() {
     popBurst.classList.remove('animate');
@@ -264,12 +417,25 @@ const ACHIEVEMENTS = [
   if (!wethy) return;
 
   /* Play WETHY sound */
-  if (!muted) {
+  if (gameVolume > 0) {
     try {
       wethyAudio.currentTime = 0;
-
+  
+      wethyAudio.volume =
+        gameVolume / 100;
+  
       const playPromise =
         wethyAudio.play();
+  
+      if (
+        playPromise &&
+        typeof playPromise.catch ===
+          'function'
+      ) {
+        playPromise.catch(() => {});
+      }
+    } catch (_) {}
+  }
 
       if (
         playPromise &&
@@ -1378,11 +1544,134 @@ if (score === 420) {
     }
   });
 
-  muteButton.addEventListener('click', () => {
-    muted = !muted;
-    localStorage.setItem(STORAGE_MUTE, muted ? '1' : '0');
-    renderMute();
-  });
+  function openSound() {
+  if (!soundBackdrop) return;
+
+  renderSoundSettings();
+
+  soundBackdrop.hidden = false;
+
+  document.body.classList.add(
+    'modal-open'
+  );
+
+  if (siteMenu) {
+    siteMenu.hidden = true;
+  }
+
+  if (menuButton) {
+    menuButton.setAttribute(
+      'aria-expanded',
+      'false'
+    );
+  }
+}
+
+function closeSound() {
+  if (!soundBackdrop) return;
+
+  soundBackdrop.hidden = true;
+
+  document.body.classList.remove(
+    'modal-open'
+  );
+
+  soundButton?.focus();
+}
+
+soundButton?.addEventListener(
+  'click',
+  openSound
+);
+
+closeSoundButton?.addEventListener(
+  'click',
+  closeSound
+);
+
+soundBackdrop?.addEventListener(
+  'click',
+  (event) => {
+    if (event.target === soundBackdrop) {
+      closeSound();
+    }
+  }
+);
+
+musicVolumeSlider?.addEventListener(
+  'input',
+  () => {
+    musicVolume =
+      Number(musicVolumeSlider.value);
+
+    localStorage.setItem(
+      MUSIC_VOLUME_STORAGE,
+      String(musicVolume)
+    );
+
+    if (musicVolumeValue) {
+      musicVolumeValue.textContent =
+        String(musicVolume);
+    }
+
+    updateMusicVolume();
+
+    startBackgroundMusic();
+  }
+);
+
+gameVolumeSlider?.addEventListener(
+  'input',
+  () => {
+    gameVolume =
+      Number(gameVolumeSlider.value);
+
+    localStorage.setItem(
+      GAME_VOLUME_STORAGE,
+      String(gameVolume)
+    );
+
+    if (gameVolumeValue) {
+      gameVolumeValue.textContent =
+        String(gameVolume);
+    }
+  }
+);
+
+function unlockBackgroundMusic() {
+  startBackgroundMusic();
+}
+
+document.addEventListener(
+  'pointerdown',
+  unlockBackgroundMusic,
+  {
+    once: true,
+    capture: true
+  }
+);
+
+document.addEventListener(
+  'keydown',
+  (event) => {
+    if (
+      event.key === 'Escape' &&
+      soundBackdrop &&
+      !soundBackdrop.hidden
+    ) {
+      closeSound();
+    }
+  }
+);
+
+document.addEventListener(
+  'keydown',
+  unlockBackgroundMusic,
+  {
+    once: true,
+    capture: true
+  }
+);
   menuButton.addEventListener('click', () => {
   const isOpen = !siteMenu.hidden;
 
@@ -1717,7 +2006,7 @@ shareScoreButton?.addEventListener('click', () => {
   });
 
   renderScore();
-  renderMute();
+  renderSoundSettings();
   loadGlobalTotal();
   renderAchievements();
   checkAchievements();
