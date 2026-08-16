@@ -1690,3 +1690,33 @@ body.modal-open { overflow: hidden; }
     border-width: 2px;
   }
 }
+
+/* ===== ENDRY CHARACTER SIZE + CLICK FIX ===== */
+
+/*
+  Endry's source artwork has slightly different
+  proportions than Base Degen.
+
+  Scale from the bottom so Endry matches Base
+  visually without pushing the page downward.
+*/
+.degen-button[data-degen="endry"]
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: scale(1.06);
+}
+
+/*
+  Endry press effect.
+
+  IMPORTANT:
+  Do not use translateY here.
+  The old downward movement could briefly create
+  vertical page overflow and make the whole screen
+  shift when the scrollbar appeared.
+*/
+.degen-button[data-degen="endry"].is-down
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: scale(1.045);
+}
