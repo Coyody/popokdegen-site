@@ -1446,3 +1446,180 @@ body.modal-open { overflow: hidden; }
     font-size: 40px;
   }
 }
+
+/* ===== DEGEN UNLOCK POPUP ===== */
+
+.degen-unlock-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  z-index: 120;
+
+  width: min(520px, calc(100vw - 24px));
+  min-height: 120px;
+  padding: 18px 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  border: 5px solid #080808;
+  border-radius: 20px;
+
+  background: #ffe968;
+  color: #080808;
+
+  box-shadow: 0 9px 0 #080808;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.75)
+    rotate(-2deg);
+}
+
+.degen-unlock-toast[hidden] {
+  display: none;
+}
+
+.degen-unlock-toast.show {
+  animation: degenUnlockToast 3.4s ease forwards;
+}
+
+.degen-unlock-icon {
+  width: 68px;
+  height: 68px;
+  flex: 0 0 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 4px solid #080808;
+  border-radius: 50%;
+
+  background: #ffffff;
+
+  font-size: 36px;
+}
+
+.degen-unlock-content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.degen-unlock-label {
+  font-size: 12px;
+  letter-spacing: .16em;
+}
+
+.degen-unlock-name {
+  font-size: clamp(30px, 6vw, 46px);
+  line-height: .95;
+  letter-spacing: -.04em;
+}
+
+.degen-unlock-description {
+  margin-top: 4px;
+
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+@keyframes degenUnlockToast {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.65)
+      rotate(-4deg);
+  }
+
+  12% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1.08)
+      rotate(2deg);
+  }
+
+  20% {
+    transform:
+      translate(-50%, -50%)
+      scale(1)
+      rotate(-1deg);
+  }
+
+  75% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, -50%)
+      scale(1)
+      rotate(-1deg);
+  }
+
+  88% {
+    transform:
+      translate(-50%, -50%)
+      scale(1.04)
+      rotate(1deg);
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -50%)
+      scale(.8)
+      rotate(-2deg);
+  }
+}
+
+
+/* ===== DEGEN UNLOCK POPUP MOBILE ===== */
+
+@media (max-width: 700px) {
+
+  .degen-unlock-toast {
+    width: calc(100vw - 24px);
+    min-height: 105px;
+
+    padding: 14px 16px;
+    gap: 12px;
+
+    border-width: 4px;
+    box-shadow: 0 7px 0 #080808;
+  }
+
+  .degen-unlock-icon {
+    width: 54px;
+    height: 54px;
+    flex-basis: 54px;
+
+    border-width: 3px;
+
+    font-size: 29px;
+  }
+
+  .degen-unlock-label {
+    font-size: 10px;
+  }
+
+  .degen-unlock-name {
+    font-size: 30px;
+  }
+
+  .degen-unlock-description {
+    font-size: 11px;
+  }
+}
