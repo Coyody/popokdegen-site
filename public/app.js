@@ -106,8 +106,6 @@ const ACHIEVEMENTS = [
   { id: 'weth-lord', name: 'WETH Lord', target: 5000 },
   { id: 'weth-god', name: 'WETH GOD', target: 7500 },
   { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
-  { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 }
-  { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
   { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 },
   { id: 'max-wether', name: "Max WETH'ER", target: 250000 },
   { id: 'titan-wether', name: "Titan WETH'ER", target: 500000 },
