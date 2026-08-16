@@ -305,7 +305,7 @@ function closeStats() {
     if (requirement) {
       if (degen.id === 'base') {
         requirement.textContent =
-          '✅ ALWAYS UNLOCKED';
+          '✅ UNLOCKED';
       }
 
       else if (isUnlocked) {
