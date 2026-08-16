@@ -150,24 +150,32 @@ if (session.last_batch_at) {
 }
 
 /*
-  Browser currently accepts roughly
-  const maxAllowedScore =
-    Math.floor(elapsedSeconds * 13) + 5;
+  TOTAL SESSION TIMING CHECK
 
-  if (proposedScore > maxAllowedScore) {
-    return json(
-      {
-        error: 'Clicks arrived too quickly',
-        serverScore: currentServerScore
-      },
-      429
-    );
-  }
+  The browser accepts roughly 12.5 clicks/sec
+  because of the 80ms minimum click interval.
 
-  /*
-    Only update the session if this is exactly
-    the sequence number Cloudflare expects.
-  */
+  The server allows 13 clicks/sec plus a small
+  5-click startup allowance.
+*/
+const maxAllowedScore =
+  Math.floor(elapsedSeconds * 13) + 5;
+
+if (proposedScore > maxAllowedScore) {
+  return json(
+    {
+      error: 'Clicks arrived too quickly',
+      serverScore: currentServerScore,
+      expectedSeq
+    },
+    429
+  );
+}
+
+/*
+  Only update the session if this is exactly
+  the sequence number Cloudflare expects.
+*/
   const result = await DB.prepare(`
     UPDATE sessions
     SET
