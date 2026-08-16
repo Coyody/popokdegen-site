@@ -1127,7 +1127,7 @@ shareScoreButton?.addEventListener('click', () => {
       return;
     }
     if (score < 1) {
-      formStatus.textContent = 'Get at least 1 pop first.';
+      formStatus.textContent = 'Get at least 1 WETH first.';
       formStatus.classList.add('error');
       return;
     }
