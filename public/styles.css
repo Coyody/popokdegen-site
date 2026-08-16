@@ -392,7 +392,7 @@ body.modal-open { overflow: hidden; }
 
 /* ===== OKDEGEN FINAL CONTROL LAYOUT ===== */
 
-/* Move character slightly right so it lines up with POPS counter */
+/* Move character slightly right so it lines up with WETH'D counter */
 .degen-button {
   position: relative;
   left: 24px;
@@ -701,7 +701,7 @@ body.modal-open { overflow: hidden; }
     height: min(44dvh, 430px);
     min-height: 270px;
 
-    /* center under POPS, accounting for the hand */
+    /* center under WETH'D, accounting for the hand */
     left: 18px;
 
     /* move character lower */
