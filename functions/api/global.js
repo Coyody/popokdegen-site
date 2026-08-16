@@ -17,47 +17,20 @@ export async function onRequest(context) {
     );
   }
 
-  /*
-    GET is the normal way to read GLOBAL WETH'D.
-  */
-  if (context.request.method === 'GET') {
-    const row = await DB.prepare(`
-      SELECT total
-      FROM global_stats
-      WHERE id = 1
-    `).first();
-
-    return json({
-      total: Number(row?.total || 0)
-    });
+  if (context.request.method !== 'GET') {
+    return json(
+      { error: 'Method not allowed' },
+      405
+    );
   }
 
-  /*
-    TEMPORARY compatibility for the old frontend.
+  const row = await DB.prepare(`
+    SELECT total
+    FROM global_stats
+    WHERE id = 1
+  `).first();
 
-    The browser still POSTs to /api/global right now,
-    but this POST DOES NOT add clicks anymore.
-
-    It only returns the existing total.
-
-    We will remove this compatibility block in
-    the next step after cleaning app.js.
-  */
-  if (context.request.method === 'POST') {
-    const row = await DB.prepare(`
-      SELECT total
-      FROM global_stats
-      WHERE id = 1
-    `).first();
-
-    return json({
-      ok: true,
-      total: Number(row?.total || 0)
-    });
-  }
-
-  return json(
-    { error: 'Method not allowed' },
-    405
-  );
+  return json({
+    total: Number(row?.total || 0)
+  });
 }
