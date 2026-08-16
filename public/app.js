@@ -201,6 +201,8 @@ const ACHIEVEMENTS = [
 
 function updatePersonalBest() {
   if (score > personalBest) {
+    const previousBest = personalBest;
+
     personalBest = score;
 
     localStorage.setItem(
@@ -210,6 +212,11 @@ function updatePersonalBest() {
 
     renderStats();
     renderDegens();
+
+    checkDegenUnlocks(
+      previousBest,
+      personalBest
+    );
   }
 }
 
@@ -372,6 +379,55 @@ function closeDegens() {
   if (button) {
     button.focus();
   }
+}
+
+  function checkDegenUnlocks(previousBest, newBest) {
+  DEGENS.forEach((degen) => {
+    if (degen.target <= 0) return;
+
+    const crossedTarget =
+      previousBest < degen.target &&
+      newBest >= degen.target;
+
+    if (crossedTarget) {
+      showDegenUnlockToast(degen);
+    }
+  });
+}
+
+function showDegenUnlockToast(degen) {
+  const toast = $('degenUnlockToast');
+  const name = $('degenUnlockName');
+  const description = $('degenUnlockDescription');
+
+  if (!toast || !name || !description) {
+    return;
+  }
+
+  name.textContent =
+    degen.name.toUpperCase();
+
+  description.textContent =
+    `${degen.target.toLocaleString()} WETHS REACHED — Check the Degens menu!`;
+
+  toast.hidden = false;
+
+  toast.classList.remove('show');
+
+  // Restart animation cleanly.
+  void toast.offsetWidth;
+
+  toast.classList.add('show');
+
+  clearTimeout(
+    showDegenUnlockToast.hideTimer
+  );
+
+  showDegenUnlockToast.hideTimer =
+    setTimeout(() => {
+      toast.classList.remove('show');
+      toast.hidden = true;
+    }, 3500);
 }
 
   function updateCombo() {
