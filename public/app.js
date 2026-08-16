@@ -176,6 +176,10 @@ const ACHIEVEMENTS = [
   });
   
   let audioIndex = 0;
+  const wethyAudio =
+    new Audio('/assets/WETHY.mp3');
+
+  wethyAudio.preload = 'auto';
   let endryAudioIndex = 0;
 
   function formatScore(value) {
@@ -259,6 +263,24 @@ const ACHIEVEMENTS = [
 
   if (!wethy) return;
 
+  /* Play WETHY sound */
+  if (!muted) {
+    try {
+      wethyAudio.currentTime = 0;
+
+      const playPromise =
+        wethyAudio.play();
+
+      if (
+        playPromise &&
+        typeof playPromise.catch === 'function'
+      ) {
+        playPromise.catch(() => {});
+      }
+    } catch (_) {}
+  }
+
+  /* Restart WETHY animation */
   wethy.classList.remove('show');
 
   void wethy.offsetWidth;
