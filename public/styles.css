@@ -1755,7 +1755,7 @@ body.modal-open { overflow: hidden; }
 .wethy-event {
   position: fixed;
   right: 0;
-  bottom: 4%;
+  bottom: -6%;
   z-index: 90;
 
   width: min(440px, 42vw);
@@ -1799,6 +1799,6 @@ body.modal-open { overflow: hidden; }
 @media (max-width: 700px) {
   .wethy-event {
     width: min(360px, 72vw);
-    bottom: 7%;
+    bottom: -2%;
   }
 }
