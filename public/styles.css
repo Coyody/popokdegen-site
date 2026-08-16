@@ -1784,11 +1784,11 @@ body.modal-open { overflow: hidden; }
   }
 
   20% {
-    transform: translateX(0);
+    transform: translateX(40%);
   }
 
   72% {
-    transform: translateX(0);
+    transform: translateX(40%);
   }
 
   100% {
