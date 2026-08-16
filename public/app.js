@@ -46,6 +46,8 @@
   const STORAGE_SESSION = 'okdegenSessionId';
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
   const STORAGE_MUTE = 'okdegenMuted';
+  const SELECTED_DEGEN_STORAGE =
+  'wethdegen-selected-degen';
 
   let score = 0;
 
@@ -103,21 +105,34 @@
     id: 'base',
     name: 'Base Degen',
     target: 0,
-    artworkReady: true
+    artworkReady: true,
+    idle: '/assets/normal.png',
+    clicked: '/assets/clicked.png',
+    background: null
   },
   {
     id: 'thanos',
     name: 'Thanos',
     target: 420,
-    artworkReady: false
+    artworkReady: false,
+    idle: null,
+    clicked: null,
+    background: null
   },
   {
     id: 'endry',
     name: 'Endry',
     target: 666,
-    artworkReady: false
+    artworkReady: true,
+    idle: '/assets/EndryIdle.png',
+    clicked: '/assets/EndryClicked.png',
+    background: '/assets/EndryBackground.png'
   }
 ];
+
+let selectedDegenId =
+  localStorage.getItem(SELECTED_DEGEN_STORAGE) ||
+  'base';
 
   const ACHIEVEMENTS_STORAGE = 'wethdegen-achievements';
 
@@ -264,7 +279,83 @@ function closeStats() {
   document.body.classList.remove('modal-open');
 }
 
+  function getDegenById(id) {
+  return (
+    DEGENS.find((degen) => degen.id === id) ||
+    DEGENS[0]
+  );
+}
+
+function isDegenUnlocked(degen) {
+  return (
+    degen.target === 0 ||
+    personalBest >= degen.target
+  );
+}
+
+function getSelectedDegen() {
+  let degen = getDegenById(selectedDegenId);
+
+  if (
+    !degen.artworkReady ||
+    !isDegenUnlocked(degen)
+  ) {
+    selectedDegenId = 'base';
+
+    localStorage.setItem(
+      SELECTED_DEGEN_STORAGE,
+      selectedDegenId
+    );
+
+    degen = getDegenById('base');
+  }
+
+  return degen;
+}
+
+function applySelectedDegen() {
+  const degen = getSelectedDegen();
+
+  /*
+   * Preserve the 420 Blaze It artwork when
+   * the current score is exactly 420.
+   */
+  if (score === 420) {
+    degenImage.src = BLAZE_IDLE;
+    degenImage.classList.add('blaze-image');
+  } else {
+    degenImage.src = degen.idle;
+    degenImage.classList.remove('blaze-image');
+  }
+
+  /*
+   * Base Degen uses the normal stylesheet
+   * background. Other Degens can provide
+   * their own full-screen background.
+   */
+  if (degen.id === 'base') {
+    document.body.style.backgroundImage = '';
+    document.body.style.backgroundSize = '';
+    document.body.style.backgroundRepeat = '';
+    document.body.style.backgroundPosition = '';
+  } else if (degen.background) {
+    document.body.style.backgroundImage =
+      `url("${degen.background}")`;
+
+    document.body.style.backgroundSize =
+      'cover';
+
+    document.body.style.backgroundRepeat =
+      'no-repeat';
+
+    document.body.style.backgroundPosition =
+      'center center';
+  }
+}
+
   function renderDegens() {
+  const activeDegen = getSelectedDegen();
+
   DEGENS.forEach((degen) => {
     const card = document.querySelector(
       `[data-degen="${degen.id}"]`
@@ -283,14 +374,16 @@ function closeStats() {
     const progressText = card.querySelector(
       '[data-degen-progress-text]'
     );
-    
+
     const progressFill = card.querySelector(
       '[data-degen-progress-fill]'
     );
 
     const isUnlocked =
-      degen.target === 0 ||
-      personalBest >= degen.target;
+      isDegenUnlocked(degen);
+
+    const isSelected =
+      activeDegen.id === degen.id;
 
     card.classList.toggle(
       'locked',
@@ -302,56 +395,63 @@ function closeStats() {
       isUnlocked
     );
 
+    card.classList.toggle(
+      'selected',
+      isSelected
+    );
+
     if (requirement) {
-      if (degen.id === 'base') {
+      if (isUnlocked) {
         requirement.textContent =
           '✅ UNLOCKED';
-      }
-
-      else if (isUnlocked) {
-        requirement.textContent =
-          '✅ UNLOCKED';
-      }
-
-      else {
+      } else {
         requirement.textContent =
           `🔒 ${degen.target.toLocaleString()} CLICKS`;
       }
     }
 
-    if (progressText && progressFill && degen.target > 0) {
+    if (
+      progressText &&
+      progressFill &&
+      degen.target > 0
+    ) {
       const progressValue =
-        Math.min(personalBest, degen.target);
-    
+        Math.min(
+          personalBest,
+          degen.target
+        );
+
       const progressPercent =
         Math.min(
           100,
           Math.floor(
-            (progressValue / degen.target) * 100
+            (progressValue / degen.target) *
+              100
           )
         );
-    
+
       progressText.textContent =
         `${progressValue.toLocaleString()} / ${degen.target.toLocaleString()} WETHS`;
-    
+
       progressFill.style.width =
         `${progressPercent}%`;
     }
 
     if (button) {
-      if (degen.id === 'base') {
-        button.disabled = false;
-        button.textContent = 'SELECTED';
-      }
-
-      else if (!isUnlocked) {
+      if (!isUnlocked) {
         button.disabled = true;
         button.textContent = 'LOCKED';
-      }
-
-      else if (!degen.artworkReady) {
+      } else if (!degen.artworkReady) {
         button.disabled = true;
-        button.textContent = 'ART COMING SOON';
+        button.textContent =
+          'ART COMING SOON';
+      } else {
+        button.disabled = false;
+
+        button.textContent =
+          isSelected
+            ? 'SELECTED'
+            : 'SELECT';
       }
     }
   });
@@ -1056,12 +1156,19 @@ async function passDegenCheck() {
   updateCombo();
 
   /* Special clicked artwork only when score hits exactly 420 */
-  if (score === 420) {
+if (score === 420) {
   degenImage.src = BLAZE_CLICKED;
   degenImage.classList.add('blaze-image');
 } else {
-  degenImage.src = CLICKED;
-  degenImage.classList.remove('blaze-image');
+  const selectedDegen =
+    getSelectedDegen();
+
+  degenImage.src =
+    selectedDegen.clicked;
+
+  degenImage.classList.remove(
+    'blaze-image'
+  );
 }
 
   playPop();
@@ -1094,9 +1201,15 @@ async function passDegenCheck() {
   degenImage.src = BLAZE_IDLE;
   degenImage.classList.add('blaze-image');
 } else {
-  degenImage.src = NORMAL;
-  degenImage.classList.remove('blaze-image');
-}
+  const selectedDegen =
+    getSelectedDegen();
+
+  degenImage.src =
+    selectedDegen.idle;
+
+  degenImage.classList.remove(
+    'blaze-image'
+  );
 }
 
   degenButton.addEventListener('pointerdown', (event) => {
@@ -1353,13 +1466,32 @@ document.addEventListener(
       const degenId =
         button.dataset.selectDegen;
 
-      const status = $('degensStatus');
+      const degen =
+        getDegenById(degenId);
 
-      if (!status) return;
+      const status =
+        $('degensStatus');
 
-      if (degenId === 'base') {
+      if (
+        !isDegenUnlocked(degen) ||
+        !degen.artworkReady
+      ) {
+        return;
+      }
+
+      selectedDegenId = degen.id;
+
+      localStorage.setItem(
+        SELECTED_DEGEN_STORAGE,
+        selectedDegenId
+      );
+
+      applySelectedDegen();
+      renderDegens();
+
+      if (status) {
         status.textContent =
-          'Base Degen is already selected.';
+          `${degen.name} selected!`;
       }
     });
   });
@@ -1453,6 +1585,7 @@ shareScoreButton?.addEventListener('click', () => {
   renderAchievements();
   checkAchievements();
   renderStats();
+  applySelectedDegen();
   renderDegens();
 
 // Start a server-side timing session early when the backend exists.
