@@ -280,6 +280,14 @@ function closeStats() {
       '[data-select-degen]'
     );
 
+    const progressText = card.querySelector(
+      '[data-degen-progress-text]'
+    );
+    
+    const progressFill = card.querySelector(
+      '[data-degen-progress-fill]'
+    );
+
     const isUnlocked =
       degen.target === 0 ||
       personalBest >= degen.target;
@@ -309,6 +317,25 @@ function closeStats() {
         requirement.textContent =
           `🔒 ${degen.target.toLocaleString()} CLICKS`;
       }
+    }
+
+    if (progressText && progressFill && degen.target > 0) {
+      const progressValue =
+        Math.min(personalBest, degen.target);
+    
+      const progressPercent =
+        Math.min(
+          100,
+          Math.floor(
+            (progressValue / degen.target) * 100
+          )
+        );
+    
+      progressText.textContent =
+        `${progressValue.toLocaleString()} / ${degen.target.toLocaleString()} WETHS`;
+    
+      progressFill.style.width =
+        `${progressPercent}%`;
     }
 
     if (button) {
