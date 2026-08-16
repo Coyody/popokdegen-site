@@ -606,6 +606,43 @@ async function flushServerClicks() {
   }
 }
 
+  async function syncServerScoreBeforeSubmit() {
+  clearTimeout(serverSyncTimer);
+
+  const timeoutAt = Date.now() + 6000;
+
+  while (
+    pendingServerClicks > 0 ||
+    serverSyncInFlight
+  ) {
+    if (
+      !serverSyncInFlight &&
+      pendingServerClicks > 0
+    ) {
+      await flushServerClicks();
+    }
+
+    if (
+      pendingServerClicks === 0 &&
+      !serverSyncInFlight
+    ) {
+      break;
+    }
+
+    if (Date.now() > timeoutAt) {
+      throw new Error(
+        'Could not verify your latest clicks. Wait a moment and try again.'
+      );
+    }
+
+    await new Promise((resolve) =>
+      setTimeout(resolve, 75)
+    );
+  }
+
+  return serverAuthoritativeScore;
+}
+
   function trackClickPattern(interval) {
   if (!interval || degenCheckActive) return;
 
@@ -1094,16 +1131,25 @@ shareScoreButton?.addEventListener('click', () => {
 
     try {
       const sid = await ensureSession();
+
       if (backendMode === 'live' && sid) {
+        formStatus.textContent = 'Verifying clicks…';
+      
+        await syncServerScoreBeforeSubmit();
         const res = await fetch('/api/submit', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name, score, sessionId: sid })
+          body: JSON.stringify({ name, sessionId: sid })
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Could not submit score');
         renderLeaderboard(data.entries || []);
-        formStatus.textContent = data.improved === false ? 'Your existing high score is higher.' : 'Score submitted!';
+        serverAuthoritativeScore =
+          Number(data.score || serverAuthoritativeScore);
+        formStatus.textContent =
+          data.improved === false
+            ? `Verified score: ${Number(data.score || 0).toLocaleString()}. Your existing high score is higher.`
+            : `Verified score submitted: ${Number(data.score || 0).toLocaleString()} WETH'D!`;
         formStatus.classList.add('success');
       } else {
         const board = saveLocalScore(name, score);
