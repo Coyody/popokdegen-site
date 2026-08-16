@@ -122,7 +122,7 @@
   {
     id: 'endry',
     name: 'Endry',
-    target: 666,
+    target: 5,
     artworkReady: true,
     idle: '/assets/EndryIdle.png',
     clicked: '/assets/EndryClicked.png',
