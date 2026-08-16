@@ -470,6 +470,12 @@ async function flushServerClicks() {
     10
   );
 
+  /*
+    Remember exactly which sequence number
+    THIS request is sending.
+  */
+  const sentSeq = serverBatchSeq;
+
   pendingServerClicks -= clicks;
 
   try {
@@ -490,7 +496,7 @@ async function flushServerClicks() {
       body: JSON.stringify({
         sessionId: sid,
         clicks,
-        seq: serverBatchSeq
+        seq: sentSeq
       })
     });
 
@@ -498,18 +504,67 @@ async function flushServerClicks() {
       .json()
       .catch(() => ({}));
 
-    if (!response.ok) {
-      /*
-        If Cloudflare says our sequence is wrong,
-        synchronize with the sequence it expects.
-      */
+    /*
+      Special retry protection.
+
+      Example:
+
+      Browser sends:
+        batch #7, +10 clicks
+
+      Cloudflare accepts it, but the response
+      gets lost because of a network problem.
+
+      Browser retries batch #7.
+
+      Cloudflare says:
+        "I already expect batch #8."
+
+      That means batch #7 was already consumed,
+      so we MUST NOT add those 10 clicks back
+      to pendingServerClicks.
+    */
+    if (response.status === 409) {
+      const expectedSeq =
+        Number(data.expectedSeq);
+
+      const reportedServerScore =
+        Number(data.serverScore);
+
       if (
-        response.status === 409 &&
-        Number.isInteger(data.expectedSeq)
+        Number.isInteger(expectedSeq) &&
+        expectedSeq > sentSeq
       ) {
-        serverBatchSeq = data.expectedSeq;
+        serverBatchSeq = expectedSeq;
+
+        if (Number.isFinite(reportedServerScore)) {
+          serverAuthoritativeScore =
+            reportedServerScore;
+        }
+
+        /*
+          IMPORTANT:
+          Do NOT put "clicks" back into
+          pendingServerClicks here.
+
+          The server has already moved beyond
+          this sequence number.
+        */
+        return;
       }
 
+      if (Number.isInteger(expectedSeq)) {
+        serverBatchSeq = expectedSeq;
+      }
+
+      pendingServerClicks += clicks;
+
+      throw new Error(
+        data.error || 'Server click sequence mismatch'
+      );
+    }
+
+    if (!response.ok) {
       pendingServerClicks += clicks;
 
       throw new Error(
@@ -518,21 +573,25 @@ async function flushServerClicks() {
     }
 
     serverAuthoritativeScore =
-  Number(data.serverScore || 0);
+      Number(data.serverScore || 0);
 
-  if (Number.isFinite(Number(data.globalTotal))) {
-    globalTotalValue = Number(data.globalTotal);
-  
-    const globalTotal = $('globalTotal');
-  
-    if (globalTotal) {
-      globalTotal.textContent =
-        globalTotalValue.toLocaleString();
+    if (Number.isFinite(Number(data.globalTotal))) {
+      globalTotalValue =
+        Number(data.globalTotal);
+
+      const globalTotal = $('globalTotal');
+
+      if (globalTotal) {
+        globalTotal.textContent =
+          globalTotalValue.toLocaleString();
+      }
     }
-  }
-  
-  serverBatchSeq =
-    Number(data.nextSeq || serverBatchSeq + 1);
+
+    serverBatchSeq =
+      Number(
+        data.nextSeq ||
+        sentSeq + 1
+      );
 
   } catch (error) {
     console.warn(
