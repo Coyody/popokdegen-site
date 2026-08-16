@@ -1267,7 +1267,7 @@ async function passDegenCheck() {
   
   if (
     score > 0 &&
-    score % 100 === 0
+    score % 200 === 0
   ) {
     showWethyEvent();
   }
