@@ -1202,3 +1202,247 @@ body.modal-open { overflow: hidden; }
     font-size: 20px;
   }
 }
+
+/* ===== DEGEN CHARACTER SELECTOR ===== */
+
+.degens-modal {
+  width: min(700px, 100%);
+}
+
+.degens-intro {
+  margin: 14px 0 18px;
+
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+
+  opacity: 0.7;
+}
+
+.degens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.degen-card {
+  min-width: 0;
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 4px solid #080808;
+  border-radius: 16px;
+
+  background: #d9d9d9;
+  box-shadow: 0 5px 0 #080808;
+
+  text-align: center;
+}
+
+.degen-card.unlocked {
+  background: #fffef7;
+}
+
+.degen-card.selected {
+  background: #ffe968;
+}
+
+.degen-card-preview {
+  width: 100%;
+  height: 180px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  border: 3px solid #080808;
+  border-radius: 13px;
+
+  background: #ffffff;
+
+  overflow: hidden;
+}
+
+.degen-card-image {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  object-position: center bottom;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.degen-card-placeholder {
+  width: 82px;
+  height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 4px solid #080808;
+  border-radius: 50%;
+
+  background: #b9b9b9;
+
+  font-size: 52px;
+  line-height: 1;
+}
+
+.degen-card-name {
+  margin-top: 2px;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.degen-card-requirement {
+  min-height: 32px;
+  margin-top: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.degen-select-button {
+  width: 100%;
+  min-height: 42px;
+
+  margin-top: auto;
+  padding: 8px 10px;
+
+  border: 3px solid #080808;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #080808;
+
+  box-shadow: 0 3px 0 #080808;
+
+  font: inherit;
+  font-size: 11px;
+
+  cursor: pointer;
+}
+
+.degen-select-button:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #080808;
+}
+
+.degen-select-button:disabled {
+  background: #b9b9b9;
+
+  opacity: 0.65;
+  cursor: not-allowed;
+
+  box-shadow: none;
+}
+
+.degen-card.locked {
+  opacity: 0.65;
+}
+
+.degen-card.locked .degen-card-preview {
+  filter: grayscale(1);
+}
+
+.degens-status {
+  min-height: 18px;
+  margin-top: 14px;
+
+  text-align: center;
+
+  font-family: system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* ===== DEGEN SELECTOR MOBILE ===== */
+
+@media (max-width: 700px) {
+
+  .degens-modal {
+    max-height: 88dvh;
+  }
+
+  .degens-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .degen-card {
+    display: grid;
+    grid-template-columns: 105px 1fr;
+    grid-template-areas:
+      "preview name"
+      "preview requirement"
+      "preview button";
+
+    column-gap: 12px;
+
+    align-items: center;
+    text-align: left;
+  }
+
+  .degen-card-preview {
+    grid-area: preview;
+
+    width: 105px;
+    height: 125px;
+
+    margin: 0;
+  }
+
+  .degen-card-name {
+    grid-area: name;
+
+    width: 100%;
+
+    font-size: 17px;
+  }
+
+  .degen-card-requirement {
+    grid-area: requirement;
+
+    width: 100%;
+    min-height: 24px;
+
+    justify-content: flex-start;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+  }
+
+  .degen-select-button {
+    grid-area: button;
+
+    width: 100%;
+    min-height: 38px;
+
+    margin-top: 5px;
+  }
+
+  .degen-card-placeholder {
+    width: 64px;
+    height: 64px;
+
+    font-size: 40px;
+  }
+}
