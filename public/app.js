@@ -315,6 +315,7 @@ function getSelectedDegen() {
 
 function applySelectedDegen() {
   const degen = getSelectedDegen();
+  degenButton.dataset.degen = degen.id;
 
   /*
    * Preserve the 420 Blaze It artwork when
