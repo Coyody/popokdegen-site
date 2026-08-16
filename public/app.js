@@ -1193,23 +1193,25 @@ if (score === 420) {
 
   function release() {
   if (!pressed) return;
+
   pressed = false;
 
   degenButton.classList.remove('is-down');
 
   if (score === 420) {
-  degenImage.src = BLAZE_IDLE;
-  degenImage.classList.add('blaze-image');
-} else {
-  const selectedDegen =
-    getSelectedDegen();
+    degenImage.src = BLAZE_IDLE;
+    degenImage.classList.add('blaze-image');
+  } else {
+    const selectedDegen =
+      getSelectedDegen();
 
-  degenImage.src =
-    selectedDegen.idle;
+    degenImage.src =
+      selectedDegen.idle;
 
-  degenImage.classList.remove(
-    'blaze-image'
-  );
+    degenImage.classList.remove(
+      'blaze-image'
+    );
+  }
 }
 
   degenButton.addEventListener('pointerdown', (event) => {
