@@ -63,6 +63,12 @@
   let globalSyncTimer = null;
   let globalSyncInFlight = false;
 
+  let pendingServerClicks = 0;
+  let serverBatchSeq = 1;
+  let serverSyncTimer = null;
+  let serverSyncInFlight = false;
+  let serverAuthoritativeScore = 0;
+
   let comboCount = 0;
   let comboTimer = null;
   const COMBO_RESET_MS = 800;
@@ -497,6 +503,109 @@ async function flushGlobalClicks() {
   }
 }
 
+  function queueServerClick() {
+  pendingServerClicks += 1;
+
+  clearTimeout(serverSyncTimer);
+
+  if (pendingServerClicks >= 10) {
+    flushServerClicks();
+  } else {
+    serverSyncTimer = setTimeout(
+      flushServerClicks,
+      700
+    );
+  }
+}
+
+async function flushServerClicks() {
+  if (
+    serverSyncInFlight ||
+    pendingServerClicks === 0
+  ) {
+    return;
+  }
+
+  serverSyncInFlight = true;
+
+  const clicks = Math.min(
+    pendingServerClicks,
+    10
+  );
+
+  pendingServerClicks -= clicks;
+
+  try {
+    const sid = await ensureSession();
+
+    if (!sid || backendMode !== 'live') {
+      pendingServerClicks += clicks;
+      return;
+    }
+
+    const response = await fetch('/api/clicks', {
+      method: 'POST',
+
+      headers: {
+        'content-type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        sessionId: sid,
+        clicks,
+        seq: serverBatchSeq
+      })
+    });
+
+    const data = await response
+      .json()
+      .catch(() => ({}));
+
+    if (!response.ok) {
+      /*
+        If Cloudflare says our sequence is wrong,
+        synchronize with the sequence it expects.
+      */
+      if (
+        response.status === 409 &&
+        Number.isInteger(data.expectedSeq)
+      ) {
+        serverBatchSeq = data.expectedSeq;
+      }
+
+      pendingServerClicks += clicks;
+
+      throw new Error(
+        data.error || 'Server click sync failed'
+      );
+    }
+
+    serverAuthoritativeScore =
+      Number(data.serverScore || 0);
+
+    serverBatchSeq =
+      Number(data.nextSeq || serverBatchSeq + 1);
+
+  } catch (error) {
+    console.warn(
+      'Server click sync:',
+      error.message || error
+    );
+
+  } finally {
+    serverSyncInFlight = false;
+
+    if (pendingServerClicks > 0) {
+      clearTimeout(serverSyncTimer);
+
+      serverSyncTimer = setTimeout(
+        flushServerClicks,
+        700
+      );
+    }
+  }
+}
+
   function trackClickPattern(interval) {
   if (!interval || degenCheckActive) return;
 
@@ -677,6 +786,7 @@ async function passDegenCheck() {
   renderScore();
   updatePersonalBest();
   queueGlobalClick();
+  queueServerClick();
   checkAchievements();
   updateCombo();
 
