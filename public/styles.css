@@ -1754,7 +1754,7 @@ body.modal-open { overflow: hidden; }
 
 .wethy-event {
   position: fixed;
-  left: 0;
+  right: 0;
   bottom: 4%;
   z-index: 90;
 
@@ -1762,7 +1762,7 @@ body.modal-open { overflow: hidden; }
 
   pointer-events: none;
 
-  transform: translateX(-110%);
+  transform: translateX(110%);
 }
 
 .wethy-event img {
@@ -1780,7 +1780,7 @@ body.modal-open { overflow: hidden; }
 
 @keyframes wethyVisit {
   0% {
-    transform: translateX(-110%);
+    transform: translateX(110%);
   }
 
   20% {
@@ -1792,7 +1792,7 @@ body.modal-open { overflow: hidden; }
   }
 
   100% {
-    transform: translateX(-110%);
+    transform: translateX(110%);
   }
 }
 
