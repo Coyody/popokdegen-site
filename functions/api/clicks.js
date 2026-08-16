@@ -102,15 +102,55 @@ export async function onRequest(context) {
     elapsedMs / 1000;
 
   const proposedScore =
-    currentServerScore + clicks;
+  currentServerScore + clicks;
+
+/*
+  PER-BATCH TIMING CHECK
+
+  After the first verified batch, we also
+  check how much time has passed since the
+  previous accepted server batch.
+
+  This prevents someone from creating a
+  session, waiting a long time, then rapidly
+  dumping many batches using the accumulated
+  session time.
+*/
+if (session.last_batch_at) {
+  const sinceLastBatchMs =
+    Math.max(
+      0,
+      now - Number(session.last_batch_at)
+    );
 
   /*
-    Browser currently accepts roughly
-    12.5 clicks/sec because of the 80ms rule.
+    The browser allows one accepted click
+    about every 80ms.
 
-    Server allows 13/sec plus a small
-    5-click startup allowance.
+    We allow a small 2-click cushion for
+    network/timer jitter.
+
+    Example:
+      10-click batch needs about 640ms
+      between accepted server batches.
   */
+  const maxBatchClicks =
+    Math.floor(sinceLastBatchMs / 80) + 2;
+
+  if (clicks > maxBatchClicks) {
+    return json(
+      {
+        error: 'Click batch arrived too quickly',
+        serverScore: currentServerScore,
+        expectedSeq
+      },
+      429
+    );
+  }
+}
+
+/*
+  Browser currently accepts roughly
   const maxAllowedScore =
     Math.floor(elapsedSeconds * 13) + 5;
 
