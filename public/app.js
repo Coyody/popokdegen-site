@@ -152,16 +152,16 @@ let gameVolume =
     special420Clicked: '/assets/420Clicked.png'
   },
   {
-    id: 'thanos',
-    name: 'Thanos',
-    target: 420,
-    artworkReady: false,
-    idle: null,
-    clicked: null,
-    background: null,
-    special420Idle: null,
-    special420Clicked: null
-  },
+  id: 'thanos',
+  name: 'Thanos',
+  target: 420,
+  artworkReady: true,
+  idle: '/assets/ThanosIdle.png',
+  clicked: '/assets/ThanosClicked.png',
+  background: '/assets/ThanosBackground.png',
+  special420Idle: '/assets/420ThanosIdle.png',
+  special420Clicked: '/assets/420ThanosClicked.png'
+},
   {
     id: 'endry',
     name: 'Endry',
