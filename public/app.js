@@ -420,22 +420,12 @@ function updateMusicVolume() {
   if (gameVolume > 0) {
     try {
       wethyAudio.currentTime = 0;
-  
+
       wethyAudio.volume =
         gameVolume / 100;
-  
+
       const playPromise =
         wethyAudio.play();
-  
-      if (
-        playPromise &&
-        typeof playPromise.catch ===
-          'function'
-      ) {
-        playPromise.catch(() => {});
-      }
-    } catch (_) {}
-  }
 
       if (
         playPromise &&
