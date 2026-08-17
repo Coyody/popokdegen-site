@@ -364,29 +364,43 @@ function updateMusicVolume() {
   }
 
   function playPop() {
-  if (gameVolume <= 0) return;
-
-  const audio =
-    audioPool[
-      audioIndex++ % audioPool.length
-    ];
-
-  try {
-    audio.currentTime = 0;
-
-    audio.volume =
-      gameVolume / 100;
-
-    const p = audio.play();
-
-    if (
-      p &&
-      typeof p.catch === 'function'
-    ) {
-      p.catch(() => {});
+    if (gameVolume <= 0) return;
+  
+    const selectedDegen =
+      getSelectedDegen();
+  
+    let audio;
+  
+    if (selectedDegen.id === 'endry') {
+      audio =
+        endryAudioPool[
+          endryAudioIndex++ %
+          endryAudioPool.length
+        ];
+    } else {
+      audio =
+        audioPool[
+          audioIndex++ %
+          audioPool.length
+        ];
     }
-  } catch (_) {}
-}
+  
+    try {
+      audio.currentTime = 0;
+  
+      audio.volume =
+        gameVolume / 100;
+  
+      const p = audio.play();
+  
+      if (
+        p &&
+        typeof p.catch === 'function'
+      ) {
+        p.catch(() => {});
+      }
+    } catch (_) {}
+  }
 
   function animatePlusOne() {
     popBurst.classList.remove('animate');
