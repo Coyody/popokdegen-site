@@ -186,17 +186,17 @@ const ACHIEVEMENTS = [
   { id: 'nice', name: 'NICE!', target: 69 },
   { id: 'weth-noob', name: 'WETH Noob', target: 200 },
   { id: 'weth-blazer', name: 'WETH Blazer', target: 420 },
-  { id: 'weth-rookie', name: 'WETH Rookie', target: 1000 },
-  { id: 'weth-chad', name: 'WETH Chad', target: 2500 },
-  { id: 'weth-lord', name: 'WETH Lord', target: 5000 },
-  { id: 'weth-god', name: 'WETH GOD', target: 7500 },
-  { id: 'certified-wether', name: "Certified WETH'ER", target: 10000 },
-  { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 100000 },
-  { id: 'max-wether', name: "Max WETH'ER", target: 250000 },
-  { id: 'titan-wether', name: "Titan WETH'ER", target: 500000 },
-  { id: 'holy-weth', name: 'Holy WETH', target: 750000 },
-  { id: 'king-weth', name: 'King WETH', target: 1000000 },
-  { id: 'absolute-degen', name: 'Absolute Degen', target: 6696696 }
+  { id: 'weth-rookie', name: 'WETH Rookie', target: 600 },
+  { id: 'weth-chad', name: 'WETH Chad', target: 1000 },
+  { id: 'weth-lord', name: 'WETH Lord', target: 2000 },
+  { id: 'weth-god', name: 'WETH GOD', target: 3000 },
+  { id: 'certified-wether', name: "Certified WETH'ER", target: 5000 },
+  { id: 'ultimate-wether', name: "Ultimate WETH'ER", target: 7500 },
+  { id: 'max-wether', name: "Max WETH'ER", target: 10000 },
+  { id: 'titan-wether', name: "Titan WETH'ER", target: 15000 },
+  { id: 'holy-weth', name: 'Holy WETH', target: 20000 },
+  { id: 'king-weth', name: 'King WETH', target: 25000 },
+  { id: 'absolute-degen', name: 'Absolute Degen', target: 69696 }
 ];
 
   let achievementToastQueue = [];
