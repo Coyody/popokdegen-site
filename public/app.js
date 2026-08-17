@@ -645,13 +645,13 @@ function applySelectedDegen() {
       'no-repeat';
   
     document.body.style.backgroundPosition =
-      'center center';
+      'center bottom';
   
     document.body.style.backgroundColor =
-      '#d4d4d3';
+      '#7f9c9d';
   
     document.documentElement.style.backgroundColor =
-      '#d4d4d3';
+      '#7f9c9d';
   }
   }
 
