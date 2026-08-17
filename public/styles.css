@@ -1981,3 +1981,16 @@ body.modal-open { overflow: hidden; }
   transform-origin: 50% 100%;
   transform: scale(0.84);
 }
+
+/* Base Degen 420 art */
+.degen-button[data-degen="base"]
+.degen-image.blaze-image {
+  transform-origin: 50% 100%;
+  transform: scale(0.84);
+}
+
+.degen-button[data-degen="base"].is-down
+.degen-image.blaze-image {
+  transform-origin: 50% 100%;
+  transform: scale(0.825);
+}
