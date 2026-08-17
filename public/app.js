@@ -389,7 +389,9 @@ function updateMusicVolume() {
       audio.currentTime = 0;
   
       audio.volume =
-        gameVolume / 100;
+        selectedDegen.id === 'endry'
+          ? (gameVolume / 100) * 0.9
+          : gameVolume / 100;
   
       const p = audio.play();
   
