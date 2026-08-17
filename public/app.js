@@ -278,7 +278,7 @@ async function startBackgroundMusic() {
       musicContext.createGain();
 
     musicGainNode.gain.value =
-      musicVolume / 100;
+      (musicVolume / 100) * 0.5;
 
     musicGainNode.connect(
       musicContext.destination
@@ -321,7 +321,7 @@ function updateMusicVolume() {
   }
 
   musicGainNode.gain.setValueAtTime(
-    musicVolume / 100,
+    (musicVolume / 100) * 0.5,
     musicContext.currentTime
   );
 }
