@@ -1958,3 +1958,26 @@ body.modal-open { overflow: hidden; }
   }
 
 }
+
+/* ===== BASE DEGEN SIZE MATCH ===== */
+
+/* Main game Base Degen */
+.degen-button[data-degen="base"]
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: scale(0.84);
+}
+
+.degen-button[data-degen="base"].is-down
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: scale(0.825);
+}
+
+
+/* Base Degen preview in Degens menu */
+.degen-card[data-degen="base"]
+.degen-card-image {
+  transform-origin: 50% 100%;
+  transform: scale(0.84);
+}
