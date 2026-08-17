@@ -213,6 +213,12 @@ const ACHIEVEMENTS = [
     audio.preload = 'auto';
     return audio;
   });
+
+  const thanosAudioPool = Array.from({ length: 8 }, () => {
+    const audio = new Audio('/assets/ThanosBurp.mp3');
+    audio.preload = 'auto';
+    return audio;
+  });
   
   let audioIndex = 0;
 
@@ -331,6 +337,7 @@ function updateMusicVolume() {
 
   wethyAudio.preload = 'auto';
   let endryAudioIndex = 0;
+  let thanosAudioIndex = 0;
 
   function formatScore(value) {
     return Number(value || 0).toLocaleString('en-US');
@@ -377,6 +384,12 @@ function updateMusicVolume() {
           endryAudioIndex++ %
           endryAudioPool.length
         ];
+    } else if (selectedDegen.id === 'thanos') {
+      audio =
+        thanosAudioPool[
+          thanosAudioIndex++ %
+          thanosAudioPool.length
+        ];
     } else {
       audio =
         audioPool[
@@ -388,10 +401,13 @@ function updateMusicVolume() {
     try {
       audio.currentTime = 0;
   
-      audio.volume =
-        selectedDegen.id === 'endry'
-          ? (gameVolume / 100) * 0.9
-          : gameVolume / 100;
+      if (selectedDegen.id === 'endry') {
+        audio.volume =
+          (gameVolume / 100) * 0.9;
+      } else {
+        audio.volume =
+          gameVolume / 100;
+      }
   
       const p = audio.play();
   
