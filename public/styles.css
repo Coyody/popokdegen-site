@@ -1110,6 +1110,17 @@ body.modal-open { overflow: hidden; }
   }
 }
 
+/* Thanos only — shift slightly left to center under counter */
+.degen-button[data-degen="thanos"] {
+  left: 32px;
+}
+
+@media (max-width: 700px) {
+  .degen-button[data-degen="thanos"] {
+    left: 14px;
+  }
+}
+
 /* ===== DEGEN CHECK ===== */
 
 .degen-check-backdrop {
