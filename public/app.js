@@ -1646,8 +1646,19 @@ function unlockBackgroundMusic() {
   startBackgroundMusic();
 }
 
+/* Desktop */
 document.addEventListener(
-  'pointerdown',
+  'mousedown',
+  unlockBackgroundMusic,
+  {
+    once: true,
+    capture: true
+  }
+);
+
+/* Mobile / iPhone / iPad */
+document.addEventListener(
+  'touchend',
   unlockBackgroundMusic,
   {
     once: true,
