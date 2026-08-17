@@ -154,7 +154,7 @@ let gameVolume =
   {
   id: 'thanos',
   name: 'Thanos',
-  target: 420,
+  target: 5,
   artworkReady: true,
   idle: '/assets/ThanosIdle.png',
   clicked: '/assets/ThanosClicked.png',
