@@ -1909,3 +1909,52 @@ body.modal-open { overflow: hidden; }
     height: 22px;
   }
 }
+
+/* ===== THANOS NORMAL ART ===== */
+.degen-button[data-degen="thanos"]
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: translate(-10px, 24px) scale(1.06);
+}
+
+.degen-button[data-degen="thanos"].is-down
+.degen-image:not(.blaze-image) {
+  transform-origin: 50% 100%;
+  transform: translate(-10px, 24px) scale(1.045);
+}
+
+/* ===== THANOS 420 ART ===== */
+.degen-button[data-degen="thanos"]
+.degen-image.blaze-image {
+  transform-origin: 50% 100%;
+  transform: translate(-10px, 24px) scale(1.06);
+}
+
+.degen-button[data-degen="thanos"].is-down
+.degen-image.blaze-image {
+  transform-origin: 50% 100%;
+  transform: translate(-10px, 24px) scale(1.045);
+}
+
+/* ===== THANOS MOBILE POSITION ===== */
+@media (max-width: 700px) {
+
+  .degen-button[data-degen="thanos"]
+  .degen-image:not(.blaze-image),
+
+  .degen-button[data-degen="thanos"]
+  .degen-image.blaze-image {
+    transform-origin: 50% 100%;
+    transform: translate(0px, 24px) scale(1.06);
+  }
+
+  .degen-button[data-degen="thanos"].is-down
+  .degen-image:not(.blaze-image),
+
+  .degen-button[data-degen="thanos"].is-down
+  .degen-image.blaze-image {
+    transform-origin: 50% 100%;
+    transform: translate(0px, 24px) scale(1.045);
+  }
+
+}
