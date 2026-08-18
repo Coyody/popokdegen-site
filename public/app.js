@@ -2093,6 +2093,18 @@ shareScoreButton?.addEventListener('click', () => {
     }
   });
 
+  /* TEMP TEST — THERES MORE */
+  document.addEventListener(
+    'pointerdown',
+    () => {
+      showTheresMoreEvent();
+    },
+    {
+      once: true,
+      capture: true
+    }
+  );
+  
   renderScore();
   renderSoundSettings();
   loadGlobalTotal();
