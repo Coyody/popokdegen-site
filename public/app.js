@@ -2093,10 +2093,6 @@ shareScoreButton?.addEventListener('click', () => {
     }
   });
 
-  setTimeout(() => {
-    showTheresMoreEvent();
-  }, 2000);
-
   renderScore();
   renderSoundSettings();
   loadGlobalTotal();
