@@ -2092,18 +2092,6 @@ shareScoreButton?.addEventListener('click', () => {
       submitButton.disabled = false;
     }
   });
-
-  /* TEMP TEST — THERES MORE */
-  document.addEventListener(
-    'pointerdown',
-    () => {
-      showTheresMoreEvent();
-    },
-    {
-      once: true,
-      capture: true
-    }
-  );
   
   renderScore();
   renderSoundSettings();
