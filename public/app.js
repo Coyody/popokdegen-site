@@ -336,6 +336,10 @@ function updateMusicVolume() {
     new Audio('/assets/WETHY.mp3');
 
   wethyAudio.preload = 'auto';
+  const theresMoreAudio =
+    new Audio('/assets/ButWaitTheresMore.mp3');
+  
+  theresMoreAudio.preload = 'auto';
   let endryAudioIndex = 0;
   let thanosAudioIndex = 0;
 
@@ -483,6 +487,49 @@ function updateMusicVolume() {
     setTimeout(() => {
       wethy.classList.remove('show');
     }, 3400);
+}
+
+  function showTheresMoreEvent() {
+  const theresMore =
+    $('theresMoreEvent');
+
+  if (!theresMore) return;
+
+  /* Play But Wait, There's More sound */
+  if (gameVolume > 0) {
+    try {
+      theresMoreAudio.currentTime = 0;
+
+      theresMoreAudio.volume =
+        gameVolume / 100;
+
+      const playPromise =
+        theresMoreAudio.play();
+
+      if (
+        playPromise &&
+        typeof playPromise.catch === 'function'
+      ) {
+        playPromise.catch(() => {});
+      }
+    } catch (_) {}
+  }
+
+  /* Restart popup animation */
+  theresMore.classList.remove('show');
+
+  void theresMore.offsetWidth;
+
+  theresMore.classList.add('show');
+
+  clearTimeout(
+    showTheresMoreEvent.hideTimer
+  );
+
+  showTheresMoreEvent.hideTimer =
+    setTimeout(() => {
+      theresMore.classList.remove('show');
+    }, 4200);
 }
 
 function updatePersonalBest() {
@@ -862,6 +909,13 @@ function showDegenUnlockToast(degen) {
   function updateCombo() {
   comboCount += 1;
   updateHighestCombo();
+
+      if (
+        comboCount > 0 &&
+        comboCount % 350 === 0
+      ) {
+        showTheresMoreEvent();
+      }
 
   clearTimeout(comboTimer);
 
