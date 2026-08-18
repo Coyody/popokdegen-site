@@ -2029,3 +2029,56 @@ body {
   min-height: 100dvh;
   overflow: hidden;
 }
+
+
+/* ===== THERES MORE COMBO EVENT ===== */
+
+.theres-more-event {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 89;
+
+  width: min(430px, 38vw);
+
+  pointer-events: none;
+
+  transform: translateY(110%);
+}
+
+.theres-more-event img {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.theres-more-event.show {
+  animation: theresMoreVisit 4.1s ease-in-out forwards;
+}
+
+@keyframes theresMoreVisit {
+  0% {
+    transform: translateY(110%);
+  }
+
+  18% {
+    transform: translateY(2%);
+  }
+
+  72% {
+    transform: translateY(2%);
+  }
+
+  100% {
+    transform: translateY(110%);
+  }
+}
+
+@media (max-width: 700px) {
+  .theres-more-event {
+    width: min(340px, 72vw);
+  }
+}
