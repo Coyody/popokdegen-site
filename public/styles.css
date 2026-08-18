@@ -2044,6 +2044,9 @@ body {
   pointer-events: none;
 
   transform: translateY(110%);
+
+  transition:
+    transform 700ms ease-in-out;
 }
 
 .theres-more-event img {
@@ -2056,7 +2059,7 @@ body {
 }
 
 .theres-more-event.show {
-  animation: theresMoreVisit 4.1s ease-in-out forwards;
+  transform: translateY(2%);
 }
 
 @keyframes theresMoreVisit {
