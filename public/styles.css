@@ -2036,17 +2036,14 @@ body {
 .theres-more-event {
   position: fixed;
   left: 0;
-  bottom: 0;
-  z-index: 89;
+  bottom: -2%;
+  z-index: 90;
 
   width: min(430px, 38vw);
 
   pointer-events: none;
 
   transform: translateY(110%);
-
-  transition:
-    transform 700ms ease-in-out;
 }
 
 .theres-more-event img {
@@ -2059,7 +2056,7 @@ body {
 }
 
 .theres-more-event.show {
-  transform: translateY(2%);
+  animation: theresMoreVisit 4.2s ease-in-out forwards;
 }
 
 @keyframes theresMoreVisit {
@@ -2067,12 +2064,12 @@ body {
     transform: translateY(110%);
   }
 
-  18% {
-    transform: translateY(2%);
+  20% {
+    transform: translateY(0%);
   }
 
   72% {
-    transform: translateY(2%);
+    transform: translateY(0%);
   }
 
   100% {
@@ -2080,8 +2077,19 @@ body {
   }
 }
 
+/*
+  Keep this event working even if the device
+  has Reduced Motion enabled.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .theres-more-event.show {
+    animation-duration: 4.2s !important;
+  }
+}
+
 @media (max-width: 700px) {
   .theres-more-event {
     width: min(340px, 72vw);
+    bottom: -1%;
   }
 }
