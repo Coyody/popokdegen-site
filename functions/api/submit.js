@@ -13,6 +13,79 @@ const validName = (name) =>
 const validSession = (value) =>
   /^[0-9a-f-]{36}$/i.test(value);
 
+const BLOCKED_WORDS = [
+  // Racist / ethnic slurs
+  'nigger',
+  'nigga',
+  'chink',
+  'gook',
+  'wetback',
+  'beaner',
+  'kike',
+  'raghead',
+  'sandnigger',
+  'zipperhead',
+  'darkie',
+
+  // Sexist / misogynistic
+  'cunt',
+  'whore',
+  'slut',
+  'bitch',
+  'skank',
+  'thot',
+
+  // Homophobic / transphobic
+  'faggot',
+  'tranny',
+
+  // Ableist abuse
+  'retard',
+  'retarded'
+];
+
+const LEET_MAP = {
+  a: '[a4]',
+  b: '[b8]',
+  e: '[e3]',
+  g: '[g69]',
+  i: '[i1]',
+  l: '[l1]',
+  o: '[o0]',
+  s: '[s5]',
+  t: '[t7]',
+  z: '[z2]'
+};
+
+function makeBlockedRegex(word) {
+  const separator = '[ _.-]*';
+
+  const pattern = word
+    .toLowerCase()
+    .split('')
+    .map((char) => {
+      return LEET_MAP[char] || char;
+    })
+    .join(separator);
+
+  return new RegExp(pattern, 'gi');
+}
+
+function censorName(name) {
+  let censored = name;
+
+  for (const word of BLOCKED_WORDS) {
+    const regex = makeBlockedRegex(word);
+
+    censored = censored.replace(
+      regex,
+      (match) => '*'.repeat(match.length)
+    );
+  }
+
+  return censored;
+}
+
 async function getTop10(DB) {
   const result = await DB.prepare(
     `SELECT display_name AS name, score
@@ -68,6 +141,8 @@ export async function onRequest(context) {
     .replace(/\s+/g, ' ');
 
   const nameKey = name.toLowerCase();
+  
+  const displayName = censorName(name);
 
   const sessionId = String(
     body?.sessionId || ''
@@ -218,7 +293,7 @@ export async function onRequest(context) {
       WHERE excluded.score > scores.score
     `).bind(
       nameKey,
-      name,
+      displayname,
       trustedScore,
       now,
       sessionId
