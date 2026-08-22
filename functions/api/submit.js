@@ -14,7 +14,6 @@ const validSession = (value) =>
   /^[0-9a-f-]{36}$/i.test(value);
 
 const BLOCKED_WORDS = [
-  // Racist / ethnic slurs
   'nigger',
   'nigga',
   'chink',
@@ -27,7 +26,6 @@ const BLOCKED_WORDS = [
   'zipperhead',
   'darkie',
 
-  // Sexist / misogynistic
   'cunt',
   'whore',
   'slut',
@@ -35,47 +33,18 @@ const BLOCKED_WORDS = [
   'skank',
   'thot',
 
-  // Homophobic / transphobic
   'faggot',
   'tranny',
 
-  // Ableist abuse
   'retard',
   'retarded'
 ];
-
-const LEET_MAP = {
-  a: '[a4]',
-  b: '[b8]',
-  e: '[e3]',
-  g: '[g69]',
-  i: '[i1]',
-  l: '[l1]',
-  o: '[o0]',
-  s: '[s5]',
-  t: '[t7]',
-  z: '[z2]'
-};
-
-function makeBlockedRegex(word) {
-  const separator = '[ _.-]*';
-
-  const pattern = word
-    .toLowerCase()
-    .split('')
-    .map((char) => {
-      return LEET_MAP[char] || char;
-    })
-    .join(separator);
-
-  return new RegExp(pattern, 'gi');
-}
 
 function censorName(name) {
   let censored = name;
 
   for (const word of BLOCKED_WORDS) {
-    const regex = makeBlockedRegex(word);
+    const regex = new RegExp(word, 'gi');
 
     censored = censored.replace(
       regex,
