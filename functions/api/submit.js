@@ -40,11 +40,24 @@ const BLOCKED_WORDS = [
   'retarded'
 ];
 
+function buildLooseWordRegex(word) {
+  const escapedLetters = word
+    .split('')
+    .map((char) =>
+      char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    );
+
+  return new RegExp(
+    escapedLetters.join('[\\s._-]*'),
+    'gi'
+  );
+}
+
 function censorName(name) {
   let censored = name;
 
   for (const word of BLOCKED_WORDS) {
-    const regex = new RegExp(word, 'gi');
+    const regex = buildLooseWordRegex(word);
 
     censored = censored.replace(
       regex,
@@ -262,7 +275,7 @@ export async function onRequest(context) {
       WHERE excluded.score > scores.score
     `).bind(
       nameKey,
-      displayname,
+      displayName,
       trustedScore,
       now,
       sessionId
