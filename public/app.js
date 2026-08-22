@@ -912,7 +912,7 @@ function showDegenUnlockToast(degen) {
 
       if (
         comboCount > 0 &&
-        comboCount % 50 === 0
+        comboCount % 175 === 0
       ) {
         showTheresMoreEvent();
       }
