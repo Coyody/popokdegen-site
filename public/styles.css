@@ -2094,36 +2094,24 @@ body {
   }
 }
 
-/* ===== STABLE DESKTOP GAME LAYOUT ===== */
+/* ===== TALL DESKTOP CHARACTER CORRECTION ===== */
 
-@media (min-width: 701px) {
+/*
+  Normal desktop screens keep the original layout.
 
-  .game {
-    position: relative;
-    justify-content: flex-start;
-  }
-
-  .score-wrap {
-    position: absolute;
-    top: clamp(120px, 24vh, 230px);
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0;
-  }
-
+  On unusually tall desktop viewports, move only
+  the character downward to compensate for the
+  extra vertical space created by flex centering.
+*/
+@media (min-width: 701px) and (min-height: 950px) {
   .degen-button {
-    position: absolute;
-
-    left: 50%;
-    bottom: clamp(10px, 3vh, 35px);
-
-    margin: 0;
-
-    transform: translateX(-50%);
-  }
-
-  /* Keep Thanos centered too */
-  .degen-button[data-degen="thanos"] {
-    left: 50%;
+    transform:
+      translateY(
+        clamp(
+          40px,
+          calc(100dvh - 900px),
+          160px
+        )
+      );
   }
 }
