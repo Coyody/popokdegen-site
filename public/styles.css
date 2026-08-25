@@ -2115,3 +2115,19 @@ body {
       );
   }
 }
+
+/* ===== MENU CREDIT ===== */
+
+.menu-credit {
+  margin-top: 6px;
+  padding: 8px 8px 3px;
+
+  border-top: 1px solid rgba(8, 8, 8, 0.18);
+
+  font-family: system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+
+  opacity: 0.38;
+}
