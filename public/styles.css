@@ -2093,3 +2093,11 @@ body {
     bottom: -1%;
   }
 }
+
+/* ===== DESKTOP CHARACTER GROUNDING ===== */
+
+@media (min-width: 701px) {
+  .degen-button {
+    transform: translateY(110px);
+  }
+}
