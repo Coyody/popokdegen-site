@@ -2093,3 +2093,37 @@ body {
     bottom: -1%;
   }
 }
+
+/* ===== STABLE DESKTOP GAME LAYOUT ===== */
+
+@media (min-width: 701px) {
+
+  .game {
+    position: relative;
+    justify-content: flex-start;
+  }
+
+  .score-wrap {
+    position: absolute;
+    top: clamp(120px, 24vh, 230px);
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+  }
+
+  .degen-button {
+    position: absolute;
+
+    left: 50%;
+    bottom: clamp(10px, 3vh, 35px);
+
+    margin: 0;
+
+    transform: translateX(-50%);
+  }
+
+  /* Keep Thanos centered too */
+  .degen-button[data-degen="thanos"] {
+    left: 50%;
+  }
+}
