@@ -1851,9 +1851,19 @@ document.addEventListener('click', (event) => {
       rank.className = 'rank';
       rank.textContent = index < 3 ? ['🥇', '🥈', '🥉'][index] : `#${index + 1}`;
 
-      const name = document.createElement('span');
-      name.className = 'player-name';
+      const name = document.createElement('button');
+      name.type = 'button';
+      name.className = 'player-name player-name-button';
       name.textContent = String(entry.name || 'ANON');
+      
+      name.dataset.playerName =
+        String(entry.name || 'ANON');
+      
+      name.dataset.playerScore =
+        String(Number(entry.score || 0));
+      
+      name.dataset.playerCombo =
+        String(Number(entry.highestCombo || 0));
 
       const points = document.createElement('span');
       points.className = 'player-score';
