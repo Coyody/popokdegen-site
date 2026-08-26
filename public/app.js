@@ -66,6 +66,8 @@
   const STORAGE_SCORE = 'okdegenScore';
   const STORAGE_SESSION = 'okdegenSessionId';
   const STORAGE_LOCAL_BOARD = 'okdegenLocalLeaderboard';
+  const LEADERBOARD_NAME_STORAGE =
+    'wethdegen-leaderboard-name';
   const MUSIC_VOLUME_STORAGE =
   'wethdegen-music-volume';
 
@@ -2188,6 +2190,10 @@ shareScoreButton?.addEventListener('click', () => {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Could not submit score');
+        localStorage.setItem(
+          LEADERBOARD_NAME_STORAGE,
+          name
+        );
         renderLeaderboard(data.entries || []);
         serverAuthoritativeScore =
           Number(data.score || serverAuthoritativeScore);
