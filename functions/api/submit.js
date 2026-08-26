@@ -126,6 +126,10 @@ export async function onRequest(context) {
   
   const displayName = censorName(name);
 
+  const highestCombo = Number(
+    body?.highestCombo || 0
+  );
+
   const sessionId = String(
     body?.sessionId || ''
   );
@@ -140,6 +144,16 @@ export async function onRequest(context) {
   if (!validSession(sessionId)) {
     return json(
       { error: 'Invalid session' },
+      400
+    );
+  }
+
+  if (
+    !Number.isInteger(highestCombo) ||
+    highestCombo < 0
+  ) {
+    return json(
+      { error: 'Invalid highest combo' },
       400
     );
   }
