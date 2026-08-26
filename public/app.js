@@ -2067,7 +2067,11 @@ shareScoreButton?.addEventListener('click', () => {
         const res = await fetch('/api/submit', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ name, sessionId: sid })
+          body: JSON.stringify({
+            name,
+            sessionId: sid,
+            highestCombo
+          })
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.error || 'Could not submit score');
