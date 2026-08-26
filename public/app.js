@@ -567,6 +567,8 @@ function updatePersonalBest() {
       previousBest,
       personalBest
     );
+
+    scheduleLeaderboardProfileSync();
   }
 }
 
@@ -583,6 +585,8 @@ function updateHighestCombo() {
     );
 
     renderStats();
+
+    scheduleLeaderboardProfileSync();
   }
 }
 
