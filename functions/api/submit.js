@@ -262,35 +262,79 @@ export async function onRequest(context) {
   }
 
   const existing = await DB.prepare(
-    'SELECT score FROM scores WHERE name_key = ?'
+    `SELECT score, highest_combo
+     FROM scores
+     WHERE name_key = ?`
   ).bind(nameKey).first();
-
-  const improved =
+  
+  const improvedScore =
     !existing ||
     trustedScore > Number(existing.score);
+  
+  const improvedCombo =
+    !existing ||
+    highestCombo >
+      Number(existing.highest_combo || 0);
+  
+  const improved = improvedScore;
 
-  if (improved) {
+  if (improvedScore || improvedCombo) {
     await DB.prepare(`
       INSERT INTO scores (
         name_key,
         display_name,
         score,
+        highest_combo,
         updated_at,
         owner_session_id
       )
-      VALUES (?, ?, ?, ?, ?)
-
+      VALUES (?, ?, ?, ?, ?, ?)
+    
       ON CONFLICT(name_key) DO UPDATE SET
-        display_name = excluded.display_name,
-        score = excluded.score,
-        updated_at = excluded.updated_at,
-        owner_session_id = excluded.owner_session_id
-
-      WHERE excluded.score > scores.score
+    
+        score =
+          MAX(
+            scores.score,
+            excluded.score
+          ),
+    
+        highest_combo =
+          MAX(
+            scores.highest_combo,
+            excluded.highest_combo
+          ),
+    
+        display_name =
+          CASE
+            WHEN excluded.score > scores.score
+            THEN excluded.display_name
+            ELSE scores.display_name
+          END,
+    
+        updated_at =
+          CASE
+            WHEN excluded.score > scores.score
+            THEN excluded.updated_at
+            ELSE scores.updated_at
+          END,
+    
+        owner_session_id =
+          CASE
+            WHEN excluded.score > scores.score
+            THEN excluded.owner_session_id
+            ELSE scores.owner_session_id
+          END
+    
+      WHERE
+        excluded.score > scores.score
+        OR
+        excluded.highest_combo >
+          scores.highest_combo
     `).bind(
       nameKey,
       displayName,
       trustedScore,
+      highestCombo,
       now,
       sessionId
     ).run();
