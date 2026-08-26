@@ -1345,6 +1345,110 @@ async function flushServerClicks() {
   return serverAuthoritativeScore;
 }
 
+  /* ===== AUTOMATIC LEADERBOARD PROFILE SYNC ===== */
+
+  let leaderboardProfileSyncTimer = null;
+  let leaderboardProfileSyncInFlight = false;
+  
+  function scheduleLeaderboardProfileSync() {
+    const savedName =
+      localStorage.getItem(
+        LEADERBOARD_NAME_STORAGE
+      );
+  
+    if (
+      !savedName ||
+      score < 1
+    ) {
+      return;
+    }
+  
+    clearTimeout(
+      leaderboardProfileSyncTimer
+    );
+  
+    leaderboardProfileSyncTimer =
+      setTimeout(
+        syncLeaderboardProfile,
+        2600
+      );
+  }
+  
+  async function syncLeaderboardProfile() {
+    if (leaderboardProfileSyncInFlight) {
+      scheduleLeaderboardProfileSync();
+      return;
+    }
+  
+    const savedName =
+      localStorage.getItem(
+        LEADERBOARD_NAME_STORAGE
+      );
+  
+    if (
+      !savedName ||
+      score < 1
+    ) {
+      return;
+    }
+  
+    leaderboardProfileSyncInFlight = true;
+  
+    try {
+      const sid = await ensureSession();
+  
+      if (
+        !sid ||
+        backendMode !== 'live'
+      ) {
+        return;
+      }
+  
+      await syncServerScoreBeforeSubmit();
+  
+      const res = await fetch(
+        '/api/submit',
+        {
+          method: 'POST',
+  
+          headers: {
+            'content-type':
+              'application/json'
+          },
+  
+          body: JSON.stringify({
+            name: savedName,
+            sessionId: sid,
+            highestCombo
+          })
+        }
+      );
+  
+      const data =
+        await res.json().catch(
+          () => ({})
+        );
+  
+      if (!res.ok) {
+        return;
+      }
+  
+      if (
+        Array.isArray(data.entries)
+      ) {
+        renderLeaderboard(
+          data.entries
+        );
+      }
+  
+    } catch (_) {
+      /* Silent automatic sync */
+    } finally {
+      leaderboardProfileSyncInFlight =
+        false;
+    }
+  }
+
   function trackClickPattern(interval) {
   if (!interval || degenCheckActive) return;
 
