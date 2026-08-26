@@ -2131,3 +2131,45 @@ body {
 
   opacity: 0.38;
 }
+
+/* ===== CLICKABLE LEADERBOARD NAMES ===== */
+
+.player-name-button {
+  appearance: none;
+  -webkit-appearance: none;
+
+  justify-self: start;
+
+  width: auto;
+  max-width: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  background: transparent;
+  color: inherit;
+
+  font: inherit;
+  text-align: left;
+
+  cursor: pointer;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-name-button:hover {
+  text-decoration: underline;
+}
+
+.player-name-button:focus {
+  outline: none;
+}
+
+.player-name-button:focus-visible {
+  text-decoration: underline;
+}
