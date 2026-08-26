@@ -136,6 +136,65 @@
     </section>
   </div>
 
+  <!-- PLAYER STATS MODAL -->
+<div id="playerStatsBackdrop" class="modal-backdrop" hidden>
+
+  <section
+    id="playerStatsModal"
+    class="modal stats-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="playerStatsTitle"
+  >
+
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">PLAYER STATS</div>
+        <h1 id="playerStatsTitle">PLAYER</h1>
+      </div>
+
+      <button
+        id="closePlayerStats"
+        class="close-button"
+        type="button"
+        aria-label="Close player stats"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">PERSONAL BEST</div>
+        <div
+          id="playerStatsBest"
+          class="stat-value"
+        >
+          0
+        </div>
+        <div class="stat-unit">WETH'D</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-label">HIGHEST COMBO</div>
+        <div
+          id="playerStatsCombo"
+          class="stat-value"
+        >
+          x0
+        </div>
+        <div class="stat-unit">COMBO</div>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
   <!-- ACHIEVEMENTS MODAL -->
 <div id="achievementsBackdrop" class="modal-backdrop" hidden>
 
