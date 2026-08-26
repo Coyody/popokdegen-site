@@ -69,12 +69,15 @@ function censorName(name) {
 }
 
 async function getTop10(DB) {
-  const result = await DB.prepare(
-    `SELECT display_name AS name, score
-     FROM scores
-     ORDER BY score DESC, updated_at ASC
-     LIMIT 10`
-  ).all();
+  const result = await DB.prepare(`
+    SELECT
+      display_name AS name,
+      score,
+      highest_combo AS highestCombo
+    FROM scores
+    ORDER BY score DESC, updated_at ASC
+    LIMIT 10
+  `).all();
 
   return result.results || [];
 }
