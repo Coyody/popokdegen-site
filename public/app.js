@@ -31,6 +31,21 @@
   const submitScoreValue = $('submitScoreValue');
   const formStatus = $('formStatus');
 
+  const playerStatsBackdrop =
+  $('playerStatsBackdrop');
+
+  const closePlayerStats =
+    $('closePlayerStats');
+  
+  const playerStatsTitle =
+    $('playerStatsTitle');
+  
+  const playerStatsBest =
+    $('playerStatsBest');
+  
+  const playerStatsCombo =
+    $('playerStatsCombo');
+
   const NORMAL = '/assets/normal.png';
   const CLICKED = '/assets/clicked.png';
   const BLAZE_IDLE = '/assets/420Idle.png';
@@ -1890,6 +1905,63 @@ document.addEventListener('click', (event) => {
     }
   }
 
+  function openPlayerStats(button) {
+    if (
+      !playerStatsBackdrop ||
+      !button
+    ) {
+      return;
+    }
+  
+    const name =
+      button.dataset.playerName ||
+      'PLAYER';
+  
+    const best =
+      Number(
+        button.dataset.playerScore || 0
+      );
+  
+    const combo =
+      Number(
+        button.dataset.playerCombo || 0
+      );
+  
+    if (playerStatsTitle) {
+      playerStatsTitle.textContent = name;
+    }
+  
+    if (playerStatsBest) {
+      playerStatsBest.textContent =
+        best.toLocaleString();
+    }
+  
+    if (playerStatsCombo) {
+      playerStatsCombo.textContent =
+        `x${combo.toLocaleString()}`;
+    }
+  
+    modalBackdrop.hidden = true;
+  
+    playerStatsBackdrop.hidden = false;
+  
+    document.body.classList.add(
+      'modal-open'
+    );
+  }
+  
+  function closePlayerStatsModal() {
+    if (!playerStatsBackdrop) return;
+  
+    playerStatsBackdrop.hidden = true;
+  
+    /*
+      Return to the leaderboard after
+      closing a player's stats.
+    */
+    modalBackdrop.hidden = false;
+  }
+
   function openModal() {
     modalBackdrop.hidden = false;
     document.body.classList.add('modal-open');
@@ -1924,6 +1996,37 @@ closeModal.addEventListener('click', closeLeaderboard);
       closeAchievements();
     }
   });
+
+  leaderboardList.addEventListener(
+    'click',
+    (event) => {
+      const button =
+        event.target.closest(
+          '.player-name-button'
+        );
+  
+      if (!button) return;
+  
+      openPlayerStats(button);
+    }
+  );
+  
+  closePlayerStats?.addEventListener(
+    'click',
+    closePlayerStatsModal
+  );
+  
+  playerStatsBackdrop?.addEventListener(
+    'click',
+    (event) => {
+      if (
+        event.target ===
+        playerStatsBackdrop
+      ) {
+        closePlayerStatsModal();
+      }
+    }
+  );
 
 refreshLeaderboard.addEventListener('click', () => {
   loadLeaderboard();
