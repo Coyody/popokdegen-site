@@ -2242,6 +2242,134 @@ degenCheckButton?.addEventListener('click', (event) => {
   passDegenCheck();
 });
 
+/* ===== X SCORECARD GENERATOR ===== */
+
+async function createScorecardFile() {
+  const template = new Image();
+
+  template.decoding = 'async';
+  template.src =
+    '/assets/scorecard-template.jpg';
+
+  await new Promise(
+    (resolve, reject) => {
+      if (
+        template.complete &&
+        template.naturalWidth > 0
+      ) {
+        resolve();
+        return;
+      }
+
+      template.onload = resolve;
+
+      template.onerror = () => {
+        reject(
+          new Error(
+            'Could not load scorecard template.'
+          )
+        );
+      };
+    }
+  );
+
+  const canvas =
+    document.createElement('canvas');
+
+  canvas.width = 1200;
+  canvas.height = 630;
+
+  const ctx =
+    canvas.getContext('2d');
+
+  if (!ctx) {
+    throw new Error(
+      'Could not create scorecard.'
+    );
+  }
+
+  ctx.drawImage(
+    template,
+    0,
+    0,
+    1200,
+    630
+  );
+
+  const scoreText =
+    Number(score).toLocaleString(
+      'en-US'
+    );
+
+  let fontSize = 110;
+
+  do {
+    ctx.font =
+      `900 ${fontSize}px ` +
+      `"Arial Black", Arial, sans-serif`;
+
+    if (
+      ctx.measureText(scoreText).width <=
+      500
+    ) {
+      break;
+    }
+
+    fontSize -= 4;
+
+  } while (fontSize > 56);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+
+  ctx.strokeStyle = '#080808';
+  ctx.lineWidth = 14;
+
+  ctx.fillStyle = '#ffe600';
+
+  ctx.strokeText(
+    scoreText,
+    830,
+    335
+  );
+
+  ctx.fillText(
+    scoreText,
+    830,
+    335
+  );
+
+  const blob =
+    await new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(
+                new Error(
+                  'Could not create scorecard image.'
+                )
+              );
+            }
+          },
+          'image/png',
+          1
+        );
+      }
+    );
+
+  return new File(
+    [blob],
+    `wethdegen-${score}.png`,
+    {
+      type: 'image/png'
+    }
+  );
+}  
+
 const shareScoreButton = $('shareScoreButton');
 
 shareScoreButton?.addEventListener('click', () => {
