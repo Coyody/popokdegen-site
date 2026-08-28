@@ -2372,16 +2372,108 @@ async function createScorecardFile() {
 
 const shareScoreButton = $('shareScoreButton');
 
-shareScoreButton?.addEventListener('click', () => {
-  const shareText =
-    `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
+shareScoreButton?.addEventListener(
+  'click',
+  async () => {
+    const shareText =
+      `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
 
-  const shareUrl =
-    `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
-    `&url=${encodeURIComponent(window.location.origin)}`;
+    const siteUrl =
+      'https://wethdegen.xyz';
 
-  window.open(shareUrl, '_blank');
-});
+    try {
+      const scorecard =
+        await createScorecardFile();
+
+      /*
+        Mobile:
+        Share the actual scorecard image
+        through the phone's native share sheet.
+      */
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({
+          files: [scorecard]
+        })
+      ) {
+        await navigator.share({
+          text:
+            `${shareText}\n\n${siteUrl}`,
+          files: [scorecard]
+        });
+
+        return;
+      }
+
+      /*
+        Desktop fallback:
+        Download the scorecard, then open X.
+        The player can attach the downloaded
+        image to the post.
+      */
+      const imageUrl =
+        URL.createObjectURL(scorecard);
+
+      const download =
+        document.createElement('a');
+
+      download.href = imageUrl;
+      download.download =
+        `wethdegen-${score}.png`;
+
+      document.body.appendChild(download);
+
+      download.click();
+      download.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(imageUrl);
+      }, 1000);
+
+      const shareUrl =
+        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
+        `&url=${encodeURIComponent(siteUrl)}`;
+
+      window.open(
+        shareUrl,
+        '_blank',
+        'noopener,noreferrer'
+      );
+
+    } catch (error) {
+      /*
+        If image sharing is cancelled,
+        don't open another window.
+      */
+      if (
+        error &&
+        error.name === 'AbortError'
+      ) {
+        return;
+      }
+
+      console.error(
+        'Scorecard sharing failed:',
+        error
+      );
+
+      /*
+        Last-resort fallback:
+        normal X text share.
+      */
+      const shareUrl =
+        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
+        `&url=${encodeURIComponent(siteUrl)}`;
+
+      window.open(
+        shareUrl,
+        '_blank',
+        'noopener,noreferrer'
+      );
+    }
+  }
+);
   modalBackdrop.addEventListener('click', (event) => {
     if (event.target === modalBackdrop) closeLeaderboard();
   });
