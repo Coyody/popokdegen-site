@@ -2397,6 +2397,29 @@ function createScorecardFile() {
     dataUrl,
     `wethdegen-${score}.png`
   );
+}
+
+function fileToDataUrl(file) {
+  return new Promise(
+    (resolve, reject) => {
+      const reader =
+        new FileReader();
+
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+
+      reader.onerror = () => {
+        reject(
+          new Error(
+            'Could not read scorecard image.'
+          )
+        );
+      };
+
+      reader.readAsDataURL(file);
+    }
+  );
 }  
 
 const shareScoreButton = $('shareScoreButton');
@@ -2404,108 +2427,92 @@ const shareScoreButton = $('shareScoreButton');
 shareScoreButton?.addEventListener(
   'click',
   async () => {
+    const xWindow =
+      window.open(
+        'about:blank',
+        '_blank'
+      );
+
     const shareText =
-      `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?\n\nhttps://wethdegen.xyz`;
+      `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
 
     try {
       const scorecard =
         createScorecardFile();
 
-      /*
-        Try native file sharing first.
-        Do NOT require navigator.canShare,
-        because some mobile browsers support
-        sharing files without exposing canShare().
-      */
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            files: [scorecard]
-          });
+      const imageDataUrl =
+        await fileToDataUrl(
+          scorecard
+        );
 
-          return;
-        } catch (shareError) {
-          /*
-            User manually closed the share sheet.
-          */
-          if (
-            shareError &&
-            shareError.name === 'AbortError'
-          ) {
-            return;
+      const response =
+        await fetch(
+          '/api/share-scorecard',
+          {
+            method: 'POST',
+
+            headers: {
+              'content-type':
+                'application/json'
+            },
+
+            body: JSON.stringify({
+              score,
+              imageDataUrl
+            })
           }
+        );
 
-          /*
-            If this browser does not support
-            sharing a generated file, continue
-            to the desktop fallback below.
-          */
-          console.warn(
-            'Native image share unavailable:',
-            shareError
-          );
-        }
+      const data =
+        await response
+          .json()
+          .catch(() => ({}));
+
+      if (
+        !response.ok ||
+        !data.shareUrl
+      ) {
+        throw new Error(
+          data.error ||
+          'Could not create share card.'
+        );
       }
 
-      /*
-        Fallback:
-        save scorecard + open X composer.
-      */
-      const imageUrl =
-        URL.createObjectURL(scorecard);
+      const xShareUrl =
+        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
+        `&url=${encodeURIComponent(data.shareUrl)}`;
 
-      const download =
-        document.createElement('a');
-
-      download.href = imageUrl;
-
-      download.download =
-        `wethdegen-${score}.png`;
-
-      document.body.appendChild(
-        download
-      );
-
-      download.click();
-      download.remove();
-
-      setTimeout(() => {
-        URL.revokeObjectURL(
-          imageUrl
-        );
-      }, 1500);
-
-      const xText =
-        `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
-
-      const shareUrl =
-        `https://x.com/intent/tweet?text=${encodeURIComponent(xText)}` +
-        `&url=${encodeURIComponent('https://wethdegen.xyz')}`;
-
-      window.open(
-        shareUrl,
-        '_blank',
-        'noopener,noreferrer'
-      );
+      if (
+        xWindow &&
+        !xWindow.closed
+      ) {
+        xWindow.location.href =
+          xShareUrl;
+      } else {
+        window.location.href =
+          xShareUrl;
+      }
 
     } catch (error) {
       console.error(
-        'Scorecard sharing failed:',
+        'Scorecard share failed:',
         error
       );
 
-      const xText =
-        `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
-
-      const shareUrl =
-        `https://x.com/intent/tweet?text=${encodeURIComponent(xText)}` +
+      const fallbackUrl =
+        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
         `&url=${encodeURIComponent('https://wethdegen.xyz')}`;
 
-      window.open(
-        shareUrl,
-        '_blank',
-        'noopener,noreferrer'
-      );
+      if (
+        xWindow &&
+        !xWindow.closed
+      ) {
+        xWindow.location.href =
+          fallbackUrl;
+      } else {
+        window.location.href =
+          fallbackUrl;
+      }
     }
   }
 );
