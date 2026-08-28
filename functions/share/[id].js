@@ -86,7 +86,7 @@ export async function onRequest(context) {
     `https://wethdegen.xyz/share/${id}`;
 
   const imageUrl =
-    `https://wethdegen.xyz/share-image/${id}`;
+    `https://popokdegen.pages.dev/share-image/${id}`;
 
   const title =
     `I just WETH'd ${scoreText} times on WETHDEGEN`;
