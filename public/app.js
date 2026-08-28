@@ -2405,41 +2405,53 @@ shareScoreButton?.addEventListener(
   'click',
   async () => {
     const shareText =
-      `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
-
-    const siteUrl =
-      'https://wethdegen.xyz';
+      `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?\n\nhttps://wethdegen.xyz`;
 
     try {
       const scorecard =
         createScorecardFile();
 
       /*
-        Mobile:
-        Share the actual scorecard image
-        through the phone's native share sheet.
+        Try native file sharing first.
+        Do NOT require navigator.canShare,
+        because some mobile browsers support
+        sharing files without exposing canShare().
       */
-      if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare({
-          files: [scorecard]
-        })
-      ) {
-        await navigator.share({
-          text:
-            `${shareText}\n\n${siteUrl}`,
-          files: [scorecard]
-        });
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'WETHDEGEN',
+            text: shareText,
+            files: [scorecard]
+          });
 
-        return;
+          return;
+        } catch (shareError) {
+          /*
+            User manually closed the share sheet.
+          */
+          if (
+            shareError &&
+            shareError.name === 'AbortError'
+          ) {
+            return;
+          }
+
+          /*
+            If this browser does not support
+            sharing a generated file, continue
+            to the desktop fallback below.
+          */
+          console.warn(
+            'Native image share unavailable:',
+            shareError
+          );
+        }
       }
 
       /*
-        Desktop fallback:
-        Download the scorecard, then open X.
-        The player can attach the downloaded
-        image to the post.
+        Fallback:
+        save scorecard + open X composer.
       */
       const imageUrl =
         URL.createObjectURL(scorecard);
@@ -2448,21 +2460,29 @@ shareScoreButton?.addEventListener(
         document.createElement('a');
 
       download.href = imageUrl;
+
       download.download =
         `wethdegen-${score}.png`;
 
-      document.body.appendChild(download);
+      document.body.appendChild(
+        download
+      );
 
       download.click();
       download.remove();
 
       setTimeout(() => {
-        URL.revokeObjectURL(imageUrl);
-      }, 1000);
+        URL.revokeObjectURL(
+          imageUrl
+        );
+      }, 1500);
+
+      const xText =
+        `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
 
       const shareUrl =
-        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
-        `&url=${encodeURIComponent(siteUrl)}`;
+        `https://x.com/intent/tweet?text=${encodeURIComponent(xText)}` +
+        `&url=${encodeURIComponent('https://wethdegen.xyz')}`;
 
       window.open(
         shareUrl,
@@ -2471,29 +2491,17 @@ shareScoreButton?.addEventListener(
       );
 
     } catch (error) {
-      /*
-        If image sharing is cancelled,
-        don't open another window.
-      */
-      if (
-        error &&
-        error.name === 'AbortError'
-      ) {
-        return;
-      }
-
       console.error(
         'Scorecard sharing failed:',
         error
       );
 
-      /*
-        Last-resort fallback:
-        normal X text share.
-      */
+      const xText =
+        `I just WETH'd ${score.toLocaleString()} times on WETHDEGEN 🔥\n\nCan you beat me?`;
+
       const shareUrl =
-        `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}` +
-        `&url=${encodeURIComponent(siteUrl)}`;
+        `https://x.com/intent/tweet?text=${encodeURIComponent(xText)}` +
+        `&url=${encodeURIComponent('https://wethdegen.xyz')}`;
 
       window.open(
         shareUrl,
