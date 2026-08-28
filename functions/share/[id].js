@@ -212,17 +212,6 @@ export async function onRequest(context) {
       </a>
     </p>
   </main>
-
-  <script>
-    window.setTimeout(
-      function () {
-        window.location.replace(
-          'https://wethdegen.xyz'
-        );
-      },
-      100
-    );
-  </script>
 </body>
 </html>`;
 
