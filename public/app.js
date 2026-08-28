@@ -55,6 +55,21 @@
   
   const blazeClickedPreload = new Image();
   blazeClickedPreload.src = BLAZE_CLICKED;
+
+  /* ===== SCORECARD TEMPLATE PRELOAD ===== */
+
+  const scorecardTemplate = new Image();
+  
+  scorecardTemplate.decoding = 'async';
+  
+  scorecardTemplate.src =
+    '/assets/scorecard-template.jpg';
+  
+  if (scorecardTemplate.decode) {
+    scorecardTemplate
+      .decode()
+      .catch(() => {});
+  }
   
   if (blazeIdlePreload.decode) {
     blazeIdlePreload.decode().catch(() => {});
