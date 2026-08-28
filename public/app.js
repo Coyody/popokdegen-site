@@ -2259,37 +2259,69 @@ degenCheckButton?.addEventListener('click', (event) => {
 
 /* ===== X SCORECARD GENERATOR ===== */
 
-async function createScorecardFile() {
-  const template = new Image();
+function dataUrlToFile(
+  dataUrl,
+  filename
+) {
+  const parts =
+    dataUrl.split(',');
 
-  template.decoding = 'async';
-  template.src =
-    '/assets/scorecard-template.jpg';
+  const header =
+    parts[0] || '';
 
-  await new Promise(
-    (resolve, reject) => {
-      if (
-        template.complete &&
-        template.naturalWidth > 0
-      ) {
-        resolve();
-        return;
-      }
+  const base64 =
+    parts[1] || '';
 
-      template.onload = resolve;
+  const mimeMatch =
+    header.match(
+      /data:(.*?);base64/
+    );
 
-      template.onerror = () => {
-        reject(
-          new Error(
-            'Could not load scorecard template.'
-          )
-        );
-      };
+  const mime =
+    mimeMatch
+      ? mimeMatch[1]
+      : 'image/png';
+
+  const binary =
+    atob(base64);
+
+  const bytes =
+    new Uint8Array(
+      binary.length
+    );
+
+  for (
+    let i = 0;
+    i < binary.length;
+    i += 1
+  ) {
+    bytes[i] =
+      binary.charCodeAt(i);
+  }
+
+  return new File(
+    [bytes],
+    filename,
+    {
+      type: mime
     }
   );
+}
+
+function createScorecardFile() {
+  if (
+    !scorecardTemplate.complete ||
+    scorecardTemplate.naturalWidth === 0
+  ) {
+    throw new Error(
+      'Scorecard template is still loading.'
+    );
+  }
 
   const canvas =
-    document.createElement('canvas');
+    document.createElement(
+      'canvas'
+    );
 
   canvas.width = 1200;
   canvas.height = 630;
@@ -2304,7 +2336,7 @@ async function createScorecardFile() {
   }
 
   ctx.drawImage(
-    template,
+    scorecardTemplate,
     0,
     0,
     1200,
@@ -2324,8 +2356,9 @@ async function createScorecardFile() {
       `"Arial Black", Arial, sans-serif`;
 
     if (
-      ctx.measureText(scoreText).width <=
-      500
+      ctx.measureText(
+        scoreText
+      ).width <= 500
     ) {
       break;
     }
@@ -2355,33 +2388,14 @@ async function createScorecardFile() {
     335
   );
 
-  const blob =
-    await new Promise(
-      (resolve, reject) => {
-        canvas.toBlob(
-          (result) => {
-            if (result) {
-              resolve(result);
-            } else {
-              reject(
-                new Error(
-                  'Could not create scorecard image.'
-                )
-              );
-            }
-          },
-          'image/png',
-          1
-        );
-      }
+  const dataUrl =
+    canvas.toDataURL(
+      'image/png'
     );
 
-  return new File(
-    [blob],
-    `wethdegen-${score}.png`,
-    {
-      type: 'image/png'
-    }
+  return dataUrlToFile(
+    dataUrl,
+    `wethdegen-${score}.png`
   );
 }  
 
@@ -2398,7 +2412,7 @@ shareScoreButton?.addEventListener(
 
     try {
       const scorecard =
-        await createScorecardFile();
+        createScorecardFile();
 
       /*
         Mobile:
