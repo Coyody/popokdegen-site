@@ -2420,8 +2420,6 @@ shareScoreButton?.addEventListener(
       if (navigator.share) {
         try {
           await navigator.share({
-            title: 'WETHDEGEN',
-            text: shareText,
             files: [scorecard]
           });
 
