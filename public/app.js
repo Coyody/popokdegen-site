@@ -2308,20 +2308,37 @@ function dataUrlToFile(
   );
 }
 
-function createScorecardFile() {
-  if (
-    !scorecardTemplate.complete ||
-    scorecardTemplate.naturalWidth === 0
-  ) {
-    throw new Error(
-      'Scorecard template is still loading.'
-    );
-  }
+async function createScorecardFile() {
+  const template = new Image();
+
+  template.decoding = 'async';
+  template.src =
+    '/assets/scorecard-template.jpg';
+
+  await new Promise(
+    (resolve, reject) => {
+      if (
+        template.complete &&
+        template.naturalWidth > 0
+      ) {
+        resolve();
+        return;
+      }
+
+      template.onload = resolve;
+
+      template.onerror = () => {
+        reject(
+          new Error(
+            'Could not load scorecard template.'
+          )
+        );
+      };
+    }
+  );
 
   const canvas =
-    document.createElement(
-      'canvas'
-    );
+    document.createElement('canvas');
 
   canvas.width = 1200;
   canvas.height = 630;
@@ -2336,7 +2353,7 @@ function createScorecardFile() {
   }
 
   ctx.drawImage(
-    scorecardTemplate,
+    template,
     0,
     0,
     1200,
@@ -2388,14 +2405,33 @@ function createScorecardFile() {
     335
   );
 
-  const dataUrl =
-    canvas.toDataURL(
-      'image/png'
+  const blob =
+    await new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(
+                new Error(
+                  'Could not create scorecard image.'
+                )
+              );
+            }
+          },
+          'image/png',
+          1
+        );
+      }
     );
 
-  return dataUrlToFile(
-    dataUrl,
-    `wethdegen-${score}.png`
+  return new File(
+    [blob],
+    `wethdegen-${score}.png`,
+    {
+      type: 'image/png'
+    }
   );
 }
 
@@ -2438,7 +2474,7 @@ shareScoreButton?.addEventListener(
 
     try {
       const scorecard =
-        createScorecardFile();
+        await createScorecardFile();
 
       const imageDataUrl =
         await fileToDataUrl(
