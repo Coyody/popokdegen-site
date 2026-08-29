@@ -8,6 +8,54 @@ export async function onRequest(context) {
     );
   }
 
+  const userAgent =
+    context.request.headers.get(
+      'user-agent'
+    ) || '';
+
+  const secFetchUser =
+    context.request.headers.get(
+      'sec-fetch-user'
+    ) || '';
+
+  const isTwitterBot =
+    /Twitterbot/i.test(
+      userAgent
+    );
+
+  const isRealUserClick =
+    secFetchUser === '?1';
+
+  /*
+    X's crawler needs to see the
+    scorecard HTML so it can create
+    the large image preview.
+
+    Real visitors should go directly
+    to the WETHDEGEN game.
+  */
+  if (
+    !isTwitterBot ||
+    isRealUserClick
+  ) {
+    return new Response(
+      null,
+      {
+        status: 302,
+        headers: {
+          location:
+            'https://wethdegen.xyz',
+
+          'cache-control':
+            'no-store',
+
+          vary:
+            'User-Agent, Sec-Fetch-User'
+        }
+      }
+    );
+  }
+
   const DB = context.env.DB;
 
   if (!DB) {
@@ -200,7 +248,10 @@ export async function onRequest(context) {
           'text/html; charset=utf-8',
 
         'cache-control':
-          'public, max-age=300'
+          'no-store',
+
+        vary:
+          'User-Agent, Sec-Fetch-User'
       }
     }
   );
