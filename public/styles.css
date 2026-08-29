@@ -390,6 +390,7 @@ body.modal-open { overflow: hidden; }
     width: min(260px, 62vw);
     max-height: 70px;
     margin: 0 auto;
+    transform: translateY(35px);
   }
 
   /* Pull score closer to logo */
