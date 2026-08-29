@@ -2177,58 +2177,44 @@ body {
 /* ===== OK POODLES CLICKABLE ICON ===== */
 
 .poodles-cta {
-  position: fixed !important;
+  position: fixed;
 
-  top: 105px !important;
-  left: 29px !important;
+  top: 95px;
+  left: 20px;
 
-  width: 90px !important;
-  height: 90px !important;
+  width: 110px;
 
-  z-index: 25;
+  z-index: 29;
 
-  display: block !important;
+  display: block;
 
   cursor: pointer;
-
-  transition:
-    transform 0.15s ease,
-    filter 0.15s ease;
 }
 
 .poodles-cta img {
-  display: block !important;
+  display: block;
 
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: auto;
 
   object-fit: contain;
-
-  transform: none !important;
 
   pointer-events: none;
 }
 
-.poodles-cta:hover {
-  transform: scale(1.08);
-  filter:
-    drop-shadow(
-      0 4px 3px
-      rgba(0, 0, 0, 0.25)
-    );
-}
-
-.poodles-cta:active {
-  transform: scale(0.95);
+/* Desktop hover */
+@media (hover: hover) {
+  .poodles-cta:hover {
+    transform: scale(1.06);
+  }
 }
 
 /* Mobile */
 @media (max-width: 700px) {
   .poodles-cta {
-    top: 72px !important;
-    left: 24px !important;
+    top: 72px;
+    left: 18px;
 
-    width: 68px !important;
-    height: 68px !important;
+    width: 88px;
   }
 }
