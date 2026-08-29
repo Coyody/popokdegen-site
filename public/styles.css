@@ -2217,5 +2217,7 @@ body {
     left: 23px;
 
     width: 58px;
+
+    z-index: 15;
   }
 }
