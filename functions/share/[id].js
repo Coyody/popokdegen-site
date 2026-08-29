@@ -8,30 +8,6 @@ export async function onRequest(context) {
     );
   }
 
-    const userAgent =
-    context.request.headers.get(
-      'user-agent'
-    ) || '';
-
-  const isTwitterBot =
-    /Twitterbot/i.test(
-      userAgent
-    );
-
-  /*
-    X's crawler needs to see this page
-    so it can build the scorecard preview.
-
-    Real visitors should go straight
-    to the WETHDEGEN game.
-  */
-  if (!isTwitterBot) {
-    return Response.redirect(
-      'https://wethdegen.xyz',
-      302
-    );
-  }
-
   const DB = context.env.DB;
 
   if (!DB) {
@@ -86,7 +62,7 @@ export async function onRequest(context) {
     `https://wethdegen.xyz/share/${id}`;
 
   const imageUrl =
-    `https://popokdegen.pages.dev/share-image/${id}`;
+    `https://wethdegen.xyz/share-image/${id}`;
 
   const title =
     `I just WETH'd ${scoreText} times on WETHDEGEN`;
